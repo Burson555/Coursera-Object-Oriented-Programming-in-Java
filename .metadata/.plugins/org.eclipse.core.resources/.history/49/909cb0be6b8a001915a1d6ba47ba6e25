@@ -1,0 +1,5 @@
+package LifeExpectancy;
+
+public class LifeExpectancy extends PApplet {
+	
+}
