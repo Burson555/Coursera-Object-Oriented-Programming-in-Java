@@ -84,7 +84,7 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 		// assign color to each point marker
 		float depth = this.getDepth();
 	    if (depth < 0) {
-	    	System.out.println("Invalid Depth"); 
+	    	System.out.println("Invalid magnitude"); 
             System.exit(0); 
 	    }
 	    if (depth < THRESHOLD_INTERMEDIATE) {

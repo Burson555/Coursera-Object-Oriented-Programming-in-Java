@@ -31,7 +31,8 @@ public class OceanQuakeMarker extends EarthquakeMarker {
 		
 		// TODO: Implement this method
 		pg.pushStyle();
-		float r = super.getRadius();
+//		float r = super.getRadius();
+		float r = super.getMagnitude();
 		pg.rect(x, y, r, r);
 		pg.popStyle();
 		
