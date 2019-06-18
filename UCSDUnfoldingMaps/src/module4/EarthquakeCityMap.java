@@ -20,7 +20,7 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
+ * @author Burson
  * Date: July 17, 2015
  * */
 public class EarthquakeCityMap extends PApplet {
@@ -35,7 +35,8 @@ public class EarthquakeCityMap extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	// IF YOU ARE WORKING OFFILINE, change the value of this variable to true
-	private static final boolean offline = false;
+//	private static final boolean offline = false;
+	private static final boolean offline = true;
 	
 	/** This is where to find the local tiles, for working without an Internet connection */
 	public static String mbTilesString = "blankLight-1-3.mbtiles";
@@ -76,8 +77,8 @@ public class EarthquakeCityMap extends PApplet {
 		
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
-		//earthquakesURL = "test1.atom";
-		//earthquakesURL = "test2.atom";
+//		earthquakesURL = "test1.atom";
+		earthquakesURL = "test2.atom";
 		
 		// WHEN TAKING THIS QUIZ: Uncomment the next line
 		//earthquakesURL = "quiz1.atom";
@@ -126,7 +127,6 @@ public class EarthquakeCityMap extends PApplet {
 		background(0);
 		map.draw();
 		addKey();
-		
 	}
 	
 	// helper method to draw key in GUI
@@ -162,7 +162,6 @@ public class EarthquakeCityMap extends PApplet {
 	// set this "country" property already.  Otherwise it returns false.
 	private boolean isLand(PointFeature earthquake) {
 		
-		
 		// Loop over all the country markers.  
 		// For each, check if the earthquake PointFeature is in the 
 		// country in m.  Notice that isInCountry takes a PointFeature
@@ -170,11 +169,16 @@ public class EarthquakeCityMap extends PApplet {
 		// If isInCountry ever returns true, isLand should return true.
 		for (Marker m : countryMarkers) {
 			// TODO: Finish this method using the helper method isInCountry
-			
+			boolean isInCountry = this.isInCountry(earthquake, m);
+			if (isInCountry) {
+//				System.out.println(earthquake + "is in land.");
+				return true;
+			}
 		}
 		
-		
 		// not inside any country
+//		System.out.println(earthquake + "is NOT in land.");
+		earthquake.addProperty("country", "None");
 		return false;
 	}
 	
@@ -211,7 +215,32 @@ public class EarthquakeCityMap extends PApplet {
 		//      property set.  You can get the country with:
 		//        String country = (String)m.getProperty("country");
 		
+		for (Marker cm : countryMarkers) {
+			int counter;
+			counter = 0;
+			String targetCountry = (String)cm.getProperty("name");
+			// System.out.println("Country: " + targetCountry);
+			for (Marker m : quakeMarkers) {
+				String country = (String)m.getProperty("country");
+				if (country.compareTo(targetCountry) == 0) {
+					counter++;
+				}
+			}
+			if (counter > 0) {
+				System.out.println(cm.getProperty("name") + ": " + Integer.toString(counter));
+			}
+		}
 		
+		// counting ocean earthquakes
+		int oceanCounter;
+		oceanCounter = 0;
+		for (Marker m : quakeMarkers) {
+			String country = (String)m.getProperty("country");
+			if (country.compareTo("None") == 0) {
+				oceanCounter++;
+			}
+		}
+		System.out.println("OCEAN QUAKES: " + Integer.toString(oceanCounter));
 	}
 	
 	
