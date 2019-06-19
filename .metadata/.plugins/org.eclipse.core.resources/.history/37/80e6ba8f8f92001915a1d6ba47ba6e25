@@ -19,7 +19,7 @@ import processing.core.PGraphics;
 public class CityMarker extends CommonMarker {
 	
 	public static int TRI_SIZE = 5;  // The size of the triangle marker
-	private int TXT_SIZE = 12;  // The size of the text
+	private static int TXT_SIZE = 12;  // The size of the text
 	
 	public CityMarker(Location location) {
 		super(location);
@@ -52,10 +52,7 @@ public class CityMarker extends CommonMarker {
 	public void showTitle(PGraphics pg, float x, float y)
 	{
 		// TODO: Implement this method
-		pg.fill(255, 255, 255);
-		pg.rect(x, y, 100*this.TXT_SIZE, this.TXT_SIZE+2);
-		String str = this.getCity()+" "+this.getCountry()+" "+this.getStringProperty("population");
-		pg.text(str, x+1, y+1);
+		
 	}
 	
 	

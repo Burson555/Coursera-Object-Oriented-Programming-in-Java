@@ -150,10 +150,7 @@ public class EarthquakeCityMap extends PApplet {
 		if (lastSelected != null && lastSelected.isInside(map, mouseX, mouseY)) 
 			return;
 		// NO Longer in it
-		if (lastSelected != null) {
-			lastSelected.setSelected(false);
-			lastSelected = null;
-		}
+		lastSelected = null;
 		for (Marker m: markers) {
 			if (m.isInside(map, mouseX, mouseY)) {
 				m.setSelected(true);

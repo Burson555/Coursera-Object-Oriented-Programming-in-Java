@@ -149,18 +149,15 @@ public class EarthquakeCityMap extends PApplet {
 		// Still in LAST Selected marker
 		if (lastSelected != null && lastSelected.isInside(map, mouseX, mouseY)) 
 			return;
-		// NO Longer in it
-		if (lastSelected != null) {
-			lastSelected.setSelected(false);
-			lastSelected = null;
-		}
 		for (Marker m: markers) {
 			if (m.isInside(map, mouseX, mouseY)) {
 				m.setSelected(true);
+				if 
 				lastSelected = (CommonMarker) m;
 				return;
 			}
 		}
+		lastSelected = null;
 	}
 	
 	/** The event handler for mouse clicks

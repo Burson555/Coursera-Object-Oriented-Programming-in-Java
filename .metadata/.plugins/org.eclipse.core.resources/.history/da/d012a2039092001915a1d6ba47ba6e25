@@ -54,8 +54,6 @@ public class CityMarker extends CommonMarker {
 		// TODO: Implement this method
 		pg.fill(255, 255, 255);
 		pg.rect(x, y, 100*this.TXT_SIZE, this.TXT_SIZE+2);
-		String str = this.getCity()+" "+this.getCountry()+" "+this.getStringProperty("population");
-		pg.text(str, x+1, y+1);
 	}
 	
 	
