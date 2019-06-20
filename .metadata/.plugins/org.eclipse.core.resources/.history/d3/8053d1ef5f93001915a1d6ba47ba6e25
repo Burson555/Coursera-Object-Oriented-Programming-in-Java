@@ -202,10 +202,9 @@ public class EarthquakeCityMap extends PApplet {
 				marker.setHidden(true);
 			}
 			this.lastClicked.setHidden(false);
-			for(Marker marker : quakeMarkers) {
-				EarthquakeMarker m = (EarthquakeMarker) marker;
-				double threatRadius = m.threatCircle();
-				if (this.lastClicked.getDistanceTo(m.getLocation()) > threatRadius) {
+			for(EarthquakeMarker marker : quakeMarkers) {
+				double threatRadius =  marker.
+				if (this.lastClicked.getDistanceTo(marker.getLocation()) > limit) {
 					marker.setHidden(true);
 				}
 			}
@@ -214,10 +213,9 @@ public class EarthquakeCityMap extends PApplet {
 				marker.setHidden(true);
 			}
 			this.lastClicked.setHidden(false);
-			EarthquakeMarker m = (EarthquakeMarker) this.lastClicked;
-			double threatRadius = m.threatCircle();
+			double limit = 20*Math.pow(1.8,(2*Float.parseFloat(this.lastClicked.getStringProperty("magnitude")) - 5));
 			for(Marker marker : cityMarkers) {
-				if (this.lastClicked.getDistanceTo(marker.getLocation()) > threatRadius) {
+				if (this.lastClicked.getDistanceTo(marker.getLocation()) > limit) {
 					marker.setHidden(true);
 				}
 			}

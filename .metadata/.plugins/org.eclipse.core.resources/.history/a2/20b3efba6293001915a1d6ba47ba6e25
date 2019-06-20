@@ -215,7 +215,7 @@ public class EarthquakeCityMap extends PApplet {
 			}
 			this.lastClicked.setHidden(false);
 			EarthquakeMarker m = (EarthquakeMarker) this.lastClicked;
-			double threatRadius = m.threatCircle();
+			double threatRadius = 20*Math.pow(1.8,(2*Float.parseFloat(marker.getStringProperty("magnitude")) - 5));
 			for(Marker marker : cityMarkers) {
 				if (this.lastClicked.getDistanceTo(marker.getLocation()) > threatRadius) {
 					marker.setHidden(true);

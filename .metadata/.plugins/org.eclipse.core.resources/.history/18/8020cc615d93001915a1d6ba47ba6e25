@@ -201,26 +201,7 @@ public class EarthquakeCityMap extends PApplet {
 			for(Marker marker : cityMarkers) {
 				marker.setHidden(true);
 			}
-			this.lastClicked.setHidden(false);
-			for(Marker marker : quakeMarkers) {
-				EarthquakeMarker m = (EarthquakeMarker) marker;
-				double threatRadius = m.threatCircle();
-				if (this.lastClicked.getDistanceTo(m.getLocation()) > threatRadius) {
-					marker.setHidden(true);
-				}
-			}
-		} else if (markerFlag == 2) { // this is a earthquake marker
-			for(Marker marker : quakeMarkers) {
-				marker.setHidden(true);
-			}
-			this.lastClicked.setHidden(false);
-			EarthquakeMarker m = (EarthquakeMarker) this.lastClicked;
-			double threatRadius = m.threatCircle();
-			for(Marker marker : cityMarkers) {
-				if (this.lastClicked.getDistanceTo(marker.getLocation()) > threatRadius) {
-					marker.setHidden(true);
-				}
-			}
+			
 		}
 		// otherwise we do nothing
 	}
@@ -299,6 +280,8 @@ public class EarthquakeCityMap extends PApplet {
 		line(centerx-8, centery+8, centerx+8, centery-8);
 			
 	}
+
+	
 	
 	// Checks whether this quake occurred on land.  If it did, it sets the 
 	// "country" property of its PointFeature to the country where it occurred
