@@ -154,8 +154,6 @@ public class EarthquakeCityMap extends PApplet {
 				return;
 			}
 		}
-		// if the "if" condition is never satisfied
-		// lastSelected will remain null
 	}
 	
 	/** The event handler for mouse clicks

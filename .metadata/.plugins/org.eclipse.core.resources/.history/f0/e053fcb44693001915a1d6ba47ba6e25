@@ -147,6 +147,7 @@ public class EarthquakeCityMap extends PApplet {
 	{
 		// TODO: Implement this method
 		// Still in LAST Selected marker
+		System.out.println("Hello!");
 		for (Marker m: markers) {
 			if (m.isInside(map, this.mouseX, this.mouseY)) {
 				m.setSelected(true);

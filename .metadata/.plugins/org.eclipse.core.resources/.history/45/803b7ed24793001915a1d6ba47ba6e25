@@ -21,6 +21,7 @@ public abstract class EarthquakeMarker extends CommonMarker
 	// based on magnitude. 
 	protected float radius;
 	private int TXT_SIZE = 12;
+
 	
 	
 	// constants for distance

@@ -150,12 +150,10 @@ public class EarthquakeCityMap extends PApplet {
 		for (Marker m: markers) {
 			if (m.isInside(map, this.mouseX, this.mouseY)) {
 				m.setSelected(true);
-				lastSelected = (CommonMarker) m;
+				lastSelected = m;
 				return;
 			}
 		}
-		// if the "if" condition is never satisfied
-		// lastSelected will remain null
 	}
 	
 	/** The event handler for mouse clicks
