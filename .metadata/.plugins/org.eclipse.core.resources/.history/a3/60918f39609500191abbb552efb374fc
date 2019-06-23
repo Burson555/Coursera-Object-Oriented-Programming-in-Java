@@ -137,7 +137,6 @@ public class EarthquakeCityMap extends PApplet {
 			lastSelected.setSelected(false);
 			lastSelected = null;
 		}
-		
 		selectMarkerIfHover(quakeMarkers);
 		selectMarkerIfHover(cityMarkers);
 	}
@@ -149,9 +148,6 @@ public class EarthquakeCityMap extends PApplet {
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
 		// TODO: Implement this method
-		if (this.lastSelected != null)
-			return;
-		
 		// Still in LAST Selected marker
 		for (Marker m: markers) {
 			if (m.isInside(map, this.mouseX, this.mouseY)) {

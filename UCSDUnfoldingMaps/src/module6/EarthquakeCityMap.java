@@ -150,8 +150,8 @@ public class EarthquakeCityMap extends PApplet {
 		if (lastSelected != null) {
 			lastSelected.setSelected(false);
 			lastSelected = null;
-		
 		}
+		
 		selectMarkerIfHover(quakeMarkers);
 		selectMarkerIfHover(cityMarkers);
 		//loop();
@@ -161,6 +161,10 @@ public class EarthquakeCityMap extends PApplet {
 	private void selectMarkerIfHover(List<Marker> markers)
 	{
 		// Abort if there's already a marker selected
+		// The following if statement is important because
+		// We called the selectMarkerIfHover method twice consecutively
+		// If we selected a marker in the first selectMarkerIfHover,
+		// we don't wanna select another marker in the second selectMarkerIfHover
 		if (lastSelected != null) {
 			return;
 		}

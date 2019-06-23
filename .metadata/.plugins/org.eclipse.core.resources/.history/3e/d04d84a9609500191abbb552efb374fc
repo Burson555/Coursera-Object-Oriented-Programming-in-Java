@@ -137,7 +137,6 @@ public class EarthquakeCityMap extends PApplet {
 			lastSelected.setSelected(false);
 			lastSelected = null;
 		}
-		
 		selectMarkerIfHover(quakeMarkers);
 		selectMarkerIfHover(cityMarkers);
 	}
