@@ -1,7 +1,9 @@
 package module6;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -82,7 +84,7 @@ public class EarthquakeCityMap extends PApplet {
 		// FOR TESTING: Set earthquakesURL to be one of the testing files by uncommenting
 		// one of the lines below.  This will work whether you are online or offline
 		//earthquakesURL = "test1.atom";
-		//earthquakesURL = "test2.atom";
+		earthquakesURL = "test2.atom";
 		
 		// Uncomment this line to take the quiz
 		//earthquakesURL = "quiz2.atom";
@@ -117,6 +119,9 @@ public class EarthquakeCityMap extends PApplet {
 
 	    // could be used for debugging
 	    printQuakes();
+	    sortAndPrint(quakeMarkers.size());
+//	    sortAndPrint(3);
+//	    sortAndPrint(103);
 	 		
 	    // (3) Add markers to map
 	    //     NOTE: Country markers are not added to the map.  They are used
@@ -137,7 +142,28 @@ public class EarthquakeCityMap extends PApplet {
 	
 	
 	// TODO: Add the method:
-	//   private void sortAndPrint(int numToPrint)
+	private void sortAndPrint(int numToPrint) {
+		// manually convert to array because .toArray() function doesn't work
+		EarthquakeMarker[] sortedQuakeMarkers = new EarthquakeMarker[quakeMarkers.size()];
+		for (int i = 0; i < quakeMarkers.size(); i++)
+			sortedQuakeMarkers[i] = (EarthquakeMarker) quakeMarkers.get(i);
+
+		int length = sortedQuakeMarkers.length;
+		if (numToPrint > length)
+			numToPrint = length;
+		for (int i = 0; i < numToPrint; i++) {
+			// execute selection sort only numToPrint times
+			int indBig = i;
+			for (int j = indBig+1; j < length; j++) {
+				if (sortedQuakeMarkers[j].compareTo(sortedQuakeMarkers[indBig]) > 0)
+					indBig = j;
+			}
+			EarthquakeMarker temp = sortedQuakeMarkers[i];
+			sortedQuakeMarkers[i] = sortedQuakeMarkers[indBig];
+			sortedQuakeMarkers[indBig] = temp;
+			System.out.println(sortedQuakeMarkers[i].getTitle());
+		}
+	}
 	// and then call that method from setUp
 	
 	/** Event handler that gets called automatically when the 
