@@ -67,7 +67,15 @@ public class EarthquakeCityMap extends PApplet {
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
 	
-	public void setup() {		
+	//	FOR EXTENSION
+	private boolean drawPopup;
+	private int nearbyQuake;
+	private double avgMag;
+		
+	public void setup() {
+		
+		drawPopup = false;
+		
 		// (1) Initializing canvas and map tiles
 		size(900, 700, OPENGL);
 		if (offline) {
@@ -119,8 +127,8 @@ public class EarthquakeCityMap extends PApplet {
 
 	    // could be used for debugging
 	    printQuakes();
-	    sortAndPrint(quakeMarkers.size());
-//	    sortAndPrint(3);
+//	    sortAndPrint(quakeMarkers.size());
+	    sortAndPrint(20);
 //	    sortAndPrint(103);
 	 		
 	    // (3) Add markers to map
@@ -128,8 +136,6 @@ public class EarthquakeCityMap extends PApplet {
 	    //           for their geometric properties
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
-	    
-	    
 	}  // End setup
 	
 	
@@ -137,7 +143,8 @@ public class EarthquakeCityMap extends PApplet {
 		background(0);
 		map.draw();
 		addKey();
-		
+		if (drawPopup)
+			addPopup(this.lastClicked);
 	}
 	
 	
@@ -217,6 +224,7 @@ public class EarthquakeCityMap extends PApplet {
 		if (lastClicked != null) {
 			unhideMarkers();
 			lastClicked = null;
+			drawPopup = false;
 		}
 		else if (lastClicked == null) 
 		{
@@ -235,6 +243,9 @@ public class EarthquakeCityMap extends PApplet {
 		// Loop over the earthquake markers to see if one of them is selected
 		for (Marker marker : cityMarkers) {
 			if (!marker.isHidden() && marker.isInside(map, mouseX, mouseY)) {
+				drawPopup = true;
+				nearbyQuake = 0;
+				double totalMag = 0;
 				lastClicked = (CommonMarker)marker;
 				// Hide all the other earthquakes and hide
 				for (Marker mhide : cityMarkers) {
@@ -247,8 +258,13 @@ public class EarthquakeCityMap extends PApplet {
 					if (quakeMarker.getDistanceTo(marker.getLocation()) 
 							> quakeMarker.threatCircle()) {
 						quakeMarker.setHidden(true);
+						continue;
 					}
+					nearbyQuake++;
+					totalMag = totalMag + quakeMarker.getMagnitude();
+					System.out.println(mhide.getStringProperty("age"));
 				}
+				avgMag = totalMag/nearbyQuake;
 				return;
 			}
 		}		
@@ -353,8 +369,33 @@ public class EarthquakeCityMap extends PApplet {
 		line(centerx-8, centery-8, centerx+8, centery+8);
 		line(centerx-8, centery+8, centerx+8, centery-8);
 		
-		
 	}
+	
+	// **********************************************************************************************
+	private void addPopup(Marker m) {
+		
+		int xbase = 25;
+		int ybase = 350;
+		
+//		draw the information box
+		fill(255, 250, 240);
+		rect(xbase, ybase, 150, 250);
+		
+		fill(0);
+		textAlign(LEFT, CENTER);
+		textSize(12);
+		text("Quake/City Info", xbase+25, ybase+25);
+		
+		text("Nearby Earthquakes", xbase+25, ybase+70);
+		text(Integer.toString(this.nearbyQuake), xbase+25, ybase+90);
+		text("Average Magnitude", xbase+25, ybase+110);
+		if (this.nearbyQuake == 0)
+			text("N/A", xbase+25, ybase+130);
+		else
+			text(Double.toString(this.avgMag), xbase+25, ybase+130);			
+	}
+	// **********************************************************************************************
+
 
 	
 	
