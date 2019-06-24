@@ -8,6 +8,8 @@
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="toArray"/>
+			<item value="flag"/>
 			<item value="setClicked"/>
 			<item value="mouse"/>
 			<item value="draw"/>

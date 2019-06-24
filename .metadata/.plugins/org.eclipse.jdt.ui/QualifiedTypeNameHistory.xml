@@ -5,4 +5,7 @@
 <fullyQualifiedTypeName name="de.fhpotsdam.unfolding.UnfoldingMap"/>
 <fullyQualifiedTypeName name="de.fhpotsdam.unfolding.providers.Google"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.providers.Microsoft.MicrosoftProvider"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.providers.Microsoft"/>
 </qualifiedTypeNameHistroy>
