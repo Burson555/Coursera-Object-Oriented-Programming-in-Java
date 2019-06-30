@@ -157,7 +157,12 @@ public abstract class Document {
 	{
 	    // TODO: You will play with this method in week 1, and 
 		// then implement it in week 2
-	    return 206.835 - 1.015*(this.getNumWords()/this.getNumSentences() - 84.6*(this.getNumSyllables()/this.getNumWords()));
+		double ratio1 = (double)this.getNumWords()/this.getNumSentences();
+//		System.out.println(ratio1);
+		double ratio2 = (double)this.getNumSyllables()/this.getNumWords();
+//		System.out.println(ratio2);
+		double score = 206.835 - 1.015*ratio1 - 84.6*ratio2;
+	    return score;
 	}
 	
 	
