@@ -115,6 +115,36 @@ public class MyLinkedListTester {
 		assertEquals("Remove: check size is correct ", 2, list1.size());
 		
 		// TODO: Add more tests here
+		list1.add(89);
+		a = list1.remove(1);
+		assertEquals("Remove: check a is correct ", 42, a);
+		assertEquals("Remove: check element 0 is correct ", (Integer)89, list1.get(1));
+		assertEquals("Remove: check size is correct ", 2, list1.size());
+		
+		list1.add(66);
+		list1.add(77);
+		list1.add(88);
+		a = list1.remove(3);
+		assertEquals("Remove: check a is correct ", 77, a);
+		assertEquals("Remove: check element 0 is correct ", (Integer)66, list1.get(2));
+		assertEquals("Remove: check element 0 is correct ", (Integer)88, list1.get(3));
+		assertEquals("Remove: check size is correct ", 4, list1.size());
+
+		// test off the end of the longer array
+		try {
+			list1.remove(-1);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		
+		}
+		try {
+			list1.remove(4);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		
+		}
 	}
 	
 	/** Test adding an element into the end of the list, specifically
@@ -124,7 +154,19 @@ public class MyLinkedListTester {
 	public void testAddEnd()
 	{
         // TODO: implement this test
+		list1.add(66);
+		assertEquals("AddEnd: check end value is correct ", (Integer)66, list1.get(3));
+		assertEquals("AddEnd: check element 2 is correct ", (Integer)42, list1.get(2));
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 4, list1.size());
+
+		// test null value
+		try {
+			list1.add(null);
+			fail("Null pointer");
+		}
+		catch (NullPointerException e) {
 		
+		}
 	}
 
 	
@@ -133,6 +175,26 @@ public class MyLinkedListTester {
 	public void testSize()
 	{
 		// TODO: implement this test
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 3, list1.size());
+		list1.add(66);
+		list1.add(66);
+		list1.add(66);
+		list1.remove(0);
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 5, list1.size());
+		list1.add(66);
+		list1.add(66);
+		list1.add(66);
+		list1.add(66);
+		list1.add(66);
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 10, list1.size());
+		list1.remove(0);
+		list1.remove(0);
+		list1.remove(0);
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 7, list1.size());
+		list1.add(66);
+		list1.remove(0);
+		list1.remove(0);
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 6, list1.size());
 	}
 
 	
@@ -145,7 +207,45 @@ public class MyLinkedListTester {
 	public void testAddAtIndex()
 	{
         // TODO: implement this test
+		list1.add(2, 66);
+		assertEquals("AddEnd: check value is correct ", (Integer)66, list1.get(2));
+		assertEquals("AddEnd: check before element is correct ", (Integer)21, list1.get(1));
+		assertEquals("AddEnd: check after element is correct ", (Integer)42, list1.get(3));
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 4, list1.size());
 		
+		list1.add(0, 99);
+		assertEquals("AddEnd: check value is correct ", (Integer)99, list1.get(0));
+		assertEquals("AddEnd: check after element is correct ", (Integer)65, list1.get(1));
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 5, list1.size());
+		
+		list1.add(5, 88);
+		assertEquals("AddEnd: check value is correct ", (Integer)88, list1.get(5));
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 6, list1.size());
+
+		// test off the end of the longer array
+		try {
+			list1.add(-1, 55);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		
+		}
+		try {
+			list1.add(7, 55);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		
+		}
+
+		// test null value
+		try {
+			list1.add(2, null);
+			fail("Null pointer");
+		}
+		catch (NullPointerException e) {
+		
+		}
 	}
 	
 	/** Test setting an element in the list */
@@ -153,7 +253,44 @@ public class MyLinkedListTester {
 	public void testSet()
 	{
 	    // TODO: implement this test
-	    
+		list1.set(1, 66);
+		assertEquals("AddEnd: check value is correct ", (Integer)66, list1.get(1));
+		assertEquals("AddEnd: check before element is correct ", (Integer)65, list1.get(0));
+		assertEquals("AddEnd: check after element is correct ", (Integer)42, list1.get(2));
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 3, list1.size());
+		
+		list1.set(0, 33);
+		assertEquals("AddEnd: check value is correct ", (Integer)33, list1.get(0));
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 3, list1.size());
+		
+		list1.set(2, 22);
+		assertEquals("AddEnd: check value is correct ", (Integer)22, list1.get(2));
+		assertEquals("ReAAddEndddEndmove: check size is correct ", 3, list1.size());
+
+		// test off the end of the longer array
+		try {
+			list1.set(-1, 55);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		
+		}
+		try {
+			list1.set(3, 55);
+			fail("Check out of bounds");
+		}
+		catch (IndexOutOfBoundsException e) {
+		
+		}
+
+		// test null value
+		try {
+			list1.set(2, null);
+			fail("Null pointer");
+		}
+		catch (NullPointerException e) {
+		
+		}
 	}
 	
 	
