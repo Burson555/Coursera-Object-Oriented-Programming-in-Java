@@ -291,9 +291,6 @@ public class MyLinkedListTester {
 		catch (NullPointerException e) {
 		
 		}
-	}
-	
-	
-	// TODO: Optionally add more test methods.
-	
+	}	
+
 }
