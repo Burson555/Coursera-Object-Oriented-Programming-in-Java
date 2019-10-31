@@ -129,8 +129,35 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       If it is a word, add it to the completions list
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
-    	 
-         return null;
+    	 List<String> predictions = new LinkedList<String>();
+    	 if (prefix == null)
+    		 return predictions;
+    	 // find the TRIE node to begin with
+    	 prefix = prefix.toLowerCase();
+    	 char[] charArray = prefix.toCharArray();
+    	 TrieNode temp = this.root;
+    	 for (char c : charArray) {
+    		 if (temp != null)
+    			 temp = temp.getChild(c);
+    		 else
+    			 break;
+    	 }
+    	 if (temp == null)
+    		 return predictions;
+    	 // now we've found the TRIE node to begin with
+    	 // we can do a breadth first search
+    	 List<TrieNode> trieFIFO = new LinkedList<TrieNode>(); // the linked list itself has the feature of FIFO
+    	 trieFIFO.add(temp);
+    	 while (!trieFIFO.isEmpty() && numCompletions > 0) {
+    		 temp = trieFIFO.remove(0);
+    		 if (temp.endsWord()) {
+    			 predictions.add(temp.getText());
+        		 numCompletions--;
+    		 }
+    		 for (Character c : temp.getValidNextCharacters())
+    			 trieFIFO.add(temp.getChild(c));
+    	 }
+    	 return predictions; // it is possible that predictions is empty
      }
 
  	// For debugging
