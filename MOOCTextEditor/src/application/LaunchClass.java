@@ -33,7 +33,8 @@ public class LaunchClass {
     }
     
     public spelling.Dictionary getDictionary() {
-        spelling.Dictionary d = new spelling.DictionaryBST();
+//        spelling.Dictionary d = new spelling.DictionaryBST();
+        spelling.DictionaryHashSetMatchCase d = new spelling.DictionaryHashSetMatchCase();
         spelling.DictionaryLoader.loadDictionary(d, dictFile);
     	return d;
     }

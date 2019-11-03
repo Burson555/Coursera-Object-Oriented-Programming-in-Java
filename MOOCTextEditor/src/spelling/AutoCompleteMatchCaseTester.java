@@ -46,99 +46,17 @@ public class AutoCompleteMatchCaseTester {
 		DictionaryLoader.loadDictionary(largeDict, dictFile);
 	}
 
-	
-	/** Test if the size method is working correctly.
-	 */
-	@Test
-	public void testSize()
-	{
-		assertEquals("Testing size for empty dict", 0, emptyDict.size());
-		assertEquals("Testing size for small dict", 8, smallDict.size());
-		assertEquals("Testing size for large dict", 4438, largeDict.size());
-	}
-	
 	/** Test the isWord method */
 	@Test
-	public void testIsWord()
+	public void testPredictCompletions()
 	{
-		assertEquals("Testing isWord on empty: Hello", false, emptyDict.isWord("Hello"));
-		assertEquals("Testing isWord on small: Hello", true, smallDict.isWord("Hello"));
-		assertEquals("Testing isWord on large: Hello", true, largeDict.isWord("Hello"));
-		
-		assertEquals("Testing isWord on small: hello", true, smallDict.isWord("hello"));
-		assertEquals("Testing isWord on large: hello", true, largeDict.isWord("hello"));
-
-		assertEquals("Testing isWord on small: hellow", false, smallDict.isWord("hellow"));
-		assertEquals("Testing isWord on large: hellow", false, largeDict.isWord("hellow"));
-		
-		assertEquals("Testing isWord on empty: empty string", false, emptyDict.isWord(""));
-		assertEquals("Testing isWord on small: empty string", false, smallDict.isWord(""));
-		assertEquals("Testing isWord on large: empty string", false, largeDict.isWord(""));
-		
-		assertEquals("Testing isWord on small: no", false, smallDict.isWord("no"));
-		assertEquals("Testing isWord on large: no", true, largeDict.isWord("no"));
-		
-		assertEquals("Testing isWord on small: subsequent", true, smallDict.isWord("subsequent"));
-		assertEquals("Testing isWord on large: subsequent", true, largeDict.isWord("subsequent"));
-		
-		// case sensitive test START
-		assertEquals("Testing isWord on small: Hello", false, smallDict.isWord("heLlo"));
-		assertEquals("Testing isWord on large: Hello", false, largeDict.isWord("hEllo"));
-		assertEquals("Testing isWord on large: Hello", false, largeDict.isWord("heLlo"));
-		assertEquals("Testing isWord on large: Hello", false, largeDict.isWord("hellO"));
-		
-		assertEquals("Testing isWord on small: hello", true, smallDict.isWord("HELLO"));
-		assertEquals("Testing isWord on large: hello", true, largeDict.isWord("HELLO"));
-		
-		assertEquals("Testing isWord on small: subsequent", true, smallDict.isWord("Subsequent"));
-		assertEquals("Testing isWord on large: subsequent", true, largeDict.isWord("Subsequent"));
-		
+		assertEquals("Testing isWord on large: Hello", 5, largeDict.predictCompletions("Hel", 5).size());
+		for (String prediction : largeDict.predictCompletions("Hel", 5))
+			System.out.println(prediction);
+		assertEquals("Testing isWord on large: hello", 3, largeDict.predictCompletions("hel", 3).size());
+		for (String prediction : largeDict.predictCompletions("hel", 3))
+			System.out.println(prediction);
 		
 	}
-	
-	/** Test the addWord method */
-	@Test
-	public void testAddWord()
-	{
-		
-		
-		assertEquals("Asserting hellow is not in empty dict", false, emptyDict.isWord("hellow"));
-		assertEquals("Asserting hellow is not in small dict", false, smallDict.isWord("hellow"));
-		assertEquals("Asserting hellow is not in large dict", false, largeDict.isWord("hellow"));
-		
-		emptyDict.addWord("hellow");
-		smallDict.addWord("hellow");
-		largeDict.addWord("hellow");
-
-		assertEquals("Asserting hellow is in empty dict", true, emptyDict.isWord("hellow"));
-		assertEquals("Asserting hellow is in small dict", true, smallDict.isWord("hellow"));
-		assertEquals("Asserting hellow is in large dict", true, largeDict.isWord("hellow"));
-
-		assertEquals("Asserting xyzabc is not in empty dict", false, emptyDict.isWord("xyzabc"));
-		assertEquals("Asserting xyzabc is not in small dict", false, smallDict.isWord("xyzabc"));
-		assertEquals("Asserting xyzabc is in large dict", false, largeDict.isWord("xyzabc"));
-
-		
-		emptyDict.addWord("XYZAbC");
-		smallDict.addWord("XYZAbC");
-		largeDict.addWord("XYZAbC");
-
-		assertEquals("Asserting xyzabc is in empty dict", true, emptyDict.isWord("xyzabc"));
-		assertEquals("Asserting xyzabc is in small dict", true, smallDict.isWord("xyzabc"));
-		assertEquals("Asserting xyzabc is large dict", true, largeDict.isWord("xyzabc"));
-		
-		
-		assertEquals("Testing isWord on empty: empty string", false, emptyDict.isWord(""));
-		assertEquals("Testing isWord on small: empty string", false, smallDict.isWord(""));
-		assertEquals("Testing isWord on large: empty string", false, largeDict.isWord(""));
-		
-		assertEquals("Testing isWord on small: no", false, smallDict.isWord("no"));
-		assertEquals("Testing isWord on large: no", true, largeDict.isWord("no"));
-		
-		assertEquals("Testing isWord on small: subsequent", true, smallDict.isWord("subsequent"));
-		assertEquals("Testing isWord on large: subsequent", true, largeDict.isWord("subsequent"));
-		
-		
-	}	
 	
 }

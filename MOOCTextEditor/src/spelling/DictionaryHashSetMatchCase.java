@@ -38,10 +38,26 @@ public class DictionaryHashSetMatchCase implements Dictionary
     	 return words.size();
 	}
 	
-	/** Is this a word according to this dictionary? */
+    /** Is this a word according to this dictionary? */
     @Override
 	public boolean isWord(String s) {
+		if (s == null)
+			return false;
+    	s = this.processString(s);
+		if (s == null)
+			return false;
     	return words.contains(s.toLowerCase());
+	}
+    
+	private String processString(String s) {
+		// I know for sure that s is NOT null
+		if (s.toLowerCase().compareTo(s) == 0 || s.toUpperCase().compareTo(s) == 0)
+			return s.toLowerCase();
+		// now s is at least of length 2
+		if (s.substring(1).toLowerCase().compareTo(s.substring(1)) == 0)
+			// only the first letter is capital
+			return s.toLowerCase();
+		return null;
 	}
 	
    

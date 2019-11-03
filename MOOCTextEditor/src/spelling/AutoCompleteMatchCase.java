@@ -11,12 +11,22 @@ import java.util.LinkedList;
  * @author You
  *
  */
-public class AutoCompleteMatchCase implements  Dictionary, AutoComplete {
+public class AutoCompleteMatchCase implements Dictionary, AutoComplete {
 
     private TrieNode root;
     private int size;
     
-
+    /** It is a constructor.
+	 * Methods .addWord(), .size() and .isWord() are just copied 
+	 * from class AutoCompleteDictionaryTrie and DictionaryHashSetMatchCase
+	 * with only slight modifications.
+	 * I think these methods are redundant,
+	 * 
+	 * because in the project we never call AutoCompleteMatchCase.isWord(),
+	 * AutoCompleteMatchCase.size() or AutoCompleteMatchCase.addWord().
+	 * 
+	 * When we want to call .isWord(), we call that from a Dictionary.
+	 */
     public AutoCompleteMatchCase()
 	{
 		root = new TrieNode();
@@ -144,10 +154,19 @@ public class AutoCompleteMatchCase implements  Dictionary, AutoComplete {
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
     	 List<String> predictions = new LinkedList<String>();
+    	 boolean isFirstLetterCap = false;
     	 if (prefix == null)
     		 return predictions;
     	 // find the TRIE node to begin with
-    	 prefix = prefix.toLowerCase();
+    	 if (64 < prefix.charAt(0) && prefix.charAt(0) < 91) {
+    		 if (prefix.length() == 1)
+    			 isFirstLetterCap = true;
+    		 else if (prefix.length() > 1 && prefix.substring(1).toLowerCase().equals(prefix.substring(1)))
+    			 isFirstLetterCap = true;
+    	 }
+    	 prefix = this.processString(prefix);
+    	 if (prefix == null) // it is NOT redundant, if s equals to null it means the capitalization is invalid
+    		 return predictions;
     	 char[] charArray = prefix.toCharArray();
     	 TrieNode temp = this.root;
     	 for (char c : charArray) {
@@ -170,6 +189,16 @@ public class AutoCompleteMatchCase implements  Dictionary, AutoComplete {
     		 }
     		 for (Character c : temp.getValidNextCharacters())
     			 trieFIFO.add(temp.getChild(c));
+    	 }
+    	 if (isFirstLetterCap) {
+    		 for (int i = 0; i < predictions.size(); i++) {
+    			 String prediction = predictions.get(i);
+    			 if (prediction.length() > 1)
+    				 prediction = Character.toString((char)(prediction.charAt(0) -32)) + prediction.substring(1);
+    			 else
+    				 prediction = prediction.toUpperCase();
+    			 predictions.set(i, prediction);
+    		 }
     	 }
     	 return predictions; // it is possible that predictions is empty
      }

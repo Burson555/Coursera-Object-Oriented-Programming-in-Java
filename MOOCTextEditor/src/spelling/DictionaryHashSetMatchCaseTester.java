@@ -15,13 +15,13 @@ import org.junit.Test;
  * @author UC San Diego MOOC team
  *
  */
-public class AutoCompleteDictionaryTrieTester {
+public class DictionaryHashSetMatchCaseTester {
 
 	private String dictFile = "data/words.small.txt"; 
 
-	AutoCompleteDictionaryTrie emptyDict; 
-	AutoCompleteDictionaryTrie smallDict;
-	AutoCompleteDictionaryTrie largeDict;
+	AutoCompleteMatchCase emptyDict; 
+	AutoCompleteMatchCase smallDict;
+	AutoCompleteMatchCase largeDict;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -29,9 +29,9 @@ public class AutoCompleteDictionaryTrieTester {
 	@Before
 	public void setUp() throws Exception 
 	{
-		emptyDict = new AutoCompleteDictionaryTrie();
-		smallDict = new AutoCompleteDictionaryTrie();
-		largeDict = new AutoCompleteDictionaryTrie();
+		emptyDict = new AutoCompleteMatchCase();
+		smallDict = new AutoCompleteMatchCase();
+		largeDict = new AutoCompleteMatchCase();
 
 		smallDict.addWord("Hello");
 		smallDict.addWord("HElLo");
@@ -82,12 +82,17 @@ public class AutoCompleteDictionaryTrieTester {
 		assertEquals("Testing isWord on large: subsequent", true, largeDict.isWord("subsequent"));
 		
 		// case sensitive test START
-		assertEquals("Testing isWord on large: Hello", true, largeDict.isWord("hEllo"));
-		assertEquals("Testing isWord on large: Hello", true, largeDict.isWord("heLlo"));
-		assertEquals("Testing isWord on large: Hello", true, largeDict.isWord("hellO"));
+		assertEquals("Testing isWord on large: Hello", false, largeDict.isWord("hEllo"));
+		assertEquals("Testing isWord on large: Hello", false, largeDict.isWord("heLlo"));
+		assertEquals("Testing isWord on large: Hello", false, largeDict.isWord("hellO"));
 		
 		assertEquals("Testing isWord on small: hello", true, smallDict.isWord("HELLO"));
 		assertEquals("Testing isWord on large: hello", true, largeDict.isWord("HELLO"));
+		
+		assertEquals("Testing isWord on small: subsequent", true, smallDict.isWord("Subsequent"));
+		assertEquals("Testing isWord on large: subsequent", true, largeDict.isWord("Subsequent"));
+		
+		
 	}
 	
 	/** Test the addWord method */
@@ -133,40 +138,6 @@ public class AutoCompleteDictionaryTrieTester {
 		assertEquals("Testing isWord on large: subsequent", true, largeDict.isWord("subsequent"));
 		
 		
-	}
-	
-	@Test
-	public void testPredictCompletions()
-	{
-		List<String> completions;
-		completions = smallDict.predictCompletions("", 0);
-		assertEquals(0, completions.size());
-		
-		completions = smallDict.predictCompletions("",  4);
-		assertEquals(4, completions.size());
-		assertTrue(completions.contains("a"));
-		assertTrue(completions.contains("he"));
-		boolean twoOfThree = completions.contains("hey") && completions.contains("hot") ||
-				             completions.contains("hey") && completions.contains("hem") ||
-				             completions.contains("hot") && completions.contains("hem");
-		assertTrue(twoOfThree);
-		
-		completions = smallDict.predictCompletions("he", 2);
-		boolean allIn = completions.contains("he") && 
-				(completions.contains("hem") || completions.contains("hey"));
-		assertEquals(2, completions.size());
-		assertTrue(allIn);
-		
-		completions = smallDict.predictCompletions("hel", 10);
-		assertEquals(2, completions.size());
-		allIn = completions.contains("hello") && completions.contains("help");
-		assertTrue(allIn);
-	
-		completions = smallDict.predictCompletions("x", 5);
-		assertEquals(0, completions.size());
-	}
-	
-	
-	
+	}	
 	
 }
