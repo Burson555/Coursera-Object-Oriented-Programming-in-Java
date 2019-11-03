@@ -12,20 +12,33 @@ import java.util.LinkedList;
  *
  */
 public class AutoCompleteMatchCase implements Dictionary, AutoComplete {
+	//
+	//	It is easily observed that this class, AutoCompleteMatchCase, 
+	// 		also has the feature of a dictionary, storing words.
+	//
+	//	Though this seems redundant since we already have a dictionary realized by HashSet,
+	//		and the .addWord(), .size() and .isWord() are never called from AutoCompleteMatchCase,
+	//		it is reasonable to keep both structures,
+	//		because Trie makes it easier for spelling suggestions, or BFS,
+	//		while HashSet stands out in insertion and search.
+	//
+	//	However, if we want only keep only the .predictCompletions() function in this class,
+	//		it is NOT plausible,
+	//		because our current implementation of TRIE depends heavily on TRIE structure.
+	//
+	//	If we only keep one of them, it would be TRIE because it has all functions we need.
+	//
+	//	Note: for an entirely capitalized word, the suggestions are all in lower case.
+	//			This is a potential update to be made.
+	//
 
     private TrieNode root;
     private int size;
     
-    /** It is a constructor.
+    /** This is a constructor.
 	 * Methods .addWord(), .size() and .isWord() are just copied 
-	 * from class AutoCompleteDictionaryTrie and DictionaryHashSetMatchCase
-	 * with only slight modifications.
-	 * I think these methods are redundant,
-	 * 
-	 * because in the project we never call AutoCompleteMatchCase.isWord(),
-	 * AutoCompleteMatchCase.size() or AutoCompleteMatchCase.addWord().
-	 * 
-	 * When we want to call .isWord(), we call that from a Dictionary.
+	 * from class AutoCompleteDictionaryTrie and DictionaryHashSetMatchCase.
+	 * Only small modifications are made.
 	 */
     public AutoCompleteMatchCase()
 	{

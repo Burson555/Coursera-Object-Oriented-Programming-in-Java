@@ -53,9 +53,16 @@ public class AutoCompleteMatchCaseTester {
 		assertEquals("Testing isWord on large: Hello", 5, largeDict.predictCompletions("Hel", 5).size());
 		for (String prediction : largeDict.predictCompletions("Hel", 5))
 			System.out.println(prediction);
+		System.out.println();
 		assertEquals("Testing isWord on large: hello", 3, largeDict.predictCompletions("hel", 3).size());
 		for (String prediction : largeDict.predictCompletions("hel", 3))
 			System.out.println(prediction);
+		System.out.println();
+		assertEquals("Testing isWord on large: Hello", 0, largeDict.predictCompletions("hEl", 5).size());
+		assertEquals("Testing isWord on large: Hello", 5, largeDict.predictCompletions("HEL", 5).size());
+		for (String prediction : largeDict.predictCompletions("HEL", 5))
+			System.out.println(prediction);
+		System.out.println();
 		
 	}
 	
