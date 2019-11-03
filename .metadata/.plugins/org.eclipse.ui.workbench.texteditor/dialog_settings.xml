@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="queue"/>
+		<item key="selection" value="predict"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="queue"/>
-			<item value="Integer"/>
-			<item value="generator"/>
-			<item value="index"/>
-			<item value="new"/>
-			<item value="TODO"/>
-			<item value="for"/>
-			<item value="toArray"/>
-			<item value="flag"/>
-			<item value="setClicked"/>
-			<item value="mouse"/>
-			<item value="draw"/>
-			<item value="Hash"/>
-			<item value="hash"/>
-			<item value="print"/>
+			<item value="predict"/>
+			<item value="predictCompletions"/>
+			<item value="dic"/>
+			<item value="ac"/>
+			<item value="getDictionary"/>
+			<item value="AutoSpellingTextArea"/>
+			<item value="getAutoComplete"/>
+			<item value="isWord"/>
+			<item value="StyleSpans"/>
+			<item value="HINT"/>
+			<item value="styleClass"/>
+			<item value="correct"/>
+			<item value="setBackgroundFill"/>
+			<item value="setAutoComplete"/>
+			<item value="auto"/>
 		</list>
 		<list key="replacehistory">
+			<item value="AutoCompleteMatchCase"/>
+			<item value="DictionaryHashSetMatchCase"/>
+			<item value="AutoCompleteMatchCaseTester"/>
 			<item value="E"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="1014"/>
-		<item key="DIALOG_Y_ORIGIN" value="163"/>
+		<item key="DIALOG_X_ORIGIN" value="834"/>
+		<item key="DIALOG_Y_ORIGIN" value="121"/>
 		<item key="DIALOG_WIDTH" value="294"/>
 		<item key="DIALOG_HEIGHT" value="408"/>
 		<item key="DIALOG_FONT_NAME" value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont"/>
