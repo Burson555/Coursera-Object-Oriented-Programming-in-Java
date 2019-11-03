@@ -132,6 +132,7 @@ public class NearbyWords implements SpellingSuggest {
 		HashSet<String> visited = new HashSet<String>();   // to avoid exploring the same  
 														   // string multiple times
 		List<String> retList = new LinkedList<String>();   // words to return
+		int counter = 0;									// THRESHOLD of searches
 		 
 		
 		// insert first node
@@ -139,7 +140,7 @@ public class NearbyWords implements SpellingSuggest {
 		visited.add(word);
 					
 		// TODO: Implement the remainder of this method, see assignment for algorithm
-		while (numSuggestions > 0 && queue.isEmpty() == false) {
+		while (numSuggestions > 0 && queue.isEmpty() == false && counter < THRESHOLD) {
 			String temp = queue.remove(0);
 			if (dict.isWord(temp)) {
 				retList.add(temp);
@@ -150,6 +151,7 @@ public class NearbyWords implements SpellingSuggest {
 				if (!visited.contains(tempList.get(i)))
 					queue.add(tempList.get(i));
 			visited.add(temp);
+			counter++;
 		}
 		
 		return retList;
@@ -157,7 +159,7 @@ public class NearbyWords implements SpellingSuggest {
 	}	
 
    public static void main(String[] args) {
-	   /* basic testing code to get started
+	   ///* basic testing code to get started
 	   String word = "i";
 	   // Pass NearbyWords any Dictionary implementation you prefer
 	   Dictionary d = new DictionaryHashSet();
@@ -171,7 +173,14 @@ public class NearbyWords implements SpellingSuggest {
 	   List<String> suggest = w.suggestions(word, 10);
 	   System.out.println("Spelling Suggestions for \""+word+"\" are:");
 	   System.out.println(suggest);
-	   */
+	   System.out.println("\n");
+	   
+	   word = "kangaro";
+	   suggest = w.suggestions(word, 10);
+	   System.out.println("Spelling Suggestions for \""+word+"\" are:");
+	   System.out.println(suggest);
+	   System.out.println("\n");
+	   //*/
    }
 
 }
