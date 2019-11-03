@@ -24,16 +24,16 @@ public class WPTree implements WordPath {
 	
 	// This constructor is used by the Text Editor Application
 	// You'll need to create your own NearbyWords object here.
-	public WPTree () {
+	public WPTree() {
 		this.root = null;
 		// TODO initialize a NearbyWords object
-		// Dictionary d = new DictionaryHashSet();
-		// DictionaryLoader.loadDictionary(d, "data/dict.txt");
-		// this.nw = new NearbyWords(d);
+		Dictionary d = new DictionaryHashSet();
+		DictionaryLoader.loadDictionary(d, "data/dict.txt");
+		this.nw = new NearbyWords(d);
 	}
 	
 	//This constructor will be used by the grader code
-	public WPTree (NearbyWords nw) {
+	public WPTree(NearbyWords nw) {
 		this.root = null;
 		this.nw = nw;
 	}
@@ -42,6 +42,21 @@ public class WPTree implements WordPath {
 	public List<String> findPath(String word1, String word2) 
 	{
 	    // TODO: Implement this method.
+		List<WPTreeNode> queue = new LinkedList<WPTreeNode>();
+		HashSet<String> visited = new HashSet<String>();
+		queue.add(new WPTreeNode(word1, null));
+		while (!queue.isEmpty()) {
+			WPTreeNode temp = queue.remove(0);
+			List<String> tempList = nw.distanceOne(temp.getWord(), true);
+			for (String s : tempList) {
+				WPTreeNode child = new WPTreeNode(s, temp);
+				if (s.compareTo(word2) == 0)
+					return child.buildPathToRoot();
+				queue.add(child);
+				// finish the code and add threshold
+			}
+			visited.add(temp.getWord());
+		}
 	    return new LinkedList<String>();
 	}
 	
