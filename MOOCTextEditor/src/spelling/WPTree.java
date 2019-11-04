@@ -48,7 +48,6 @@ public class WPTree implements WordPath {
 	{
 	    // TODO: Implement this method.
 		List<WPTreeNode> queue = new LinkedList<WPTreeNode>();
-//		HashSet<String> isExistingNode = new HashSet<String>();
 		HashSet<String> visited = new HashSet<String>();
 		queue.add(new WPTreeNode(word1, null));
 		int counter = 0;
@@ -61,12 +60,10 @@ public class WPTree implements WordPath {
 				WPTreeNode child = new WPTreeNode(s, temp);
 				if (s.compareTo(word2) == 0)
 					return child.buildPathToRoot();
-//				if (!isExistingNode.contains(child.getWord()))
 				if (!visited.contains(child.getWord()))
 					queue.add(child);
 				visited.add(s);
 			}
-//			isExistingNode.add(temp.getWord());
 			counter++;
 		}
 	    return new LinkedList<String>();
