@@ -21,6 +21,8 @@ public class WPTree implements WordPath {
 	private WPTreeNode root;
 	// used to search for nearby Words
 	private NearbyWords nw; 
+	// For use in the Optional Optimization
+	private static final int THRESHOLD = 1000; 
 	
 	// This constructor is used by the Text Editor Application
 	// You'll need to create your own NearbyWords object here.
@@ -43,20 +45,26 @@ public class WPTree implements WordPath {
 	{
 	    // TODO: Implement this method.
 		List<WPTreeNode> queue = new LinkedList<WPTreeNode>();
+		HashSet<String> isExistingNode = new HashSet<String>();
 		HashSet<String> visited = new HashSet<String>();
 		queue.add(new WPTreeNode(word1, null));
-		while (!queue.isEmpty()) {
+		int counter = 0;
+		while (!queue.isEmpty() && counter < THRESHOLD) {
 			WPTreeNode temp = queue.remove(0);
 			List<String> tempList = nw.distanceOne(temp.getWord(), true);
 			for (String s : tempList) {
+				if (visited.contains(s))
+					continue;
 				WPTreeNode child = new WPTreeNode(s, temp);
 				if (s.compareTo(word2) == 0)
 					return child.buildPathToRoot();
-				if (!visited.contains(child.getWord()))
+				if (!isExistingNode.contains(child.getWord()))
 					queue.add(child);
+				visited.add(s);
 				// finish the code and add threshold
 			}
-			visited.add(temp.getWord());
+			isExistingNode.add(temp.getWord());
+			counter++;
 		}
 	    return new LinkedList<String>();
 	}
