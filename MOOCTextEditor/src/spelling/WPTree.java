@@ -11,6 +11,9 @@ import java.util.List;
 /**
  * WPTree implements WordPath by dynamically creating a tree of words during a Breadth First
  * Search of Nearby words to create a path between two words. 
+ * A possible improvement of the program is to add more corner case checkers.
+ * This text editor is not perfect but performs well with the basic functionalities.
+ * After all, it is only a one person work with 20 hours of total working time.
  * 
  * @author UC San Diego Intermediate MOOC team
  *
@@ -22,7 +25,7 @@ public class WPTree implements WordPath {
 	// used to search for nearby Words
 	private NearbyWords nw; 
 	// For use in the Optional Optimization
-	private static final int THRESHOLD = 1000; 
+	private static final int THRESHOLD = 10000000; 
 	
 	// This constructor is used by the Text Editor Application
 	// You'll need to create your own NearbyWords object here.
@@ -45,7 +48,7 @@ public class WPTree implements WordPath {
 	{
 	    // TODO: Implement this method.
 		List<WPTreeNode> queue = new LinkedList<WPTreeNode>();
-		HashSet<String> isExistingNode = new HashSet<String>();
+//		HashSet<String> isExistingNode = new HashSet<String>();
 		HashSet<String> visited = new HashSet<String>();
 		queue.add(new WPTreeNode(word1, null));
 		int counter = 0;
@@ -58,12 +61,12 @@ public class WPTree implements WordPath {
 				WPTreeNode child = new WPTreeNode(s, temp);
 				if (s.compareTo(word2) == 0)
 					return child.buildPathToRoot();
-				if (!isExistingNode.contains(child.getWord()))
+//				if (!isExistingNode.contains(child.getWord()))
+				if (!visited.contains(child.getWord()))
 					queue.add(child);
 				visited.add(s);
-				// finish the code and add threshold
 			}
-			isExistingNode.add(temp.getWord());
+//			isExistingNode.add(temp.getWord());
 			counter++;
 		}
 	    return new LinkedList<String>();
