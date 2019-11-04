@@ -52,7 +52,8 @@ public class WPTree implements WordPath {
 				WPTreeNode child = new WPTreeNode(s, temp);
 				if (s.compareTo(word2) == 0)
 					return child.buildPathToRoot();
-				queue.add(child);
+				if (!visited.contains(child.getWord()))
+					queue.add(child);
 				// finish the code and add threshold
 			}
 			visited.add(temp.getWord());
