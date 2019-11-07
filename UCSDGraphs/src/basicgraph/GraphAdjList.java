@@ -95,8 +95,13 @@ public class GraphAdjList extends Graph {
 	 * @return List<Integer> a list of indices of vertices.  
 	 */		
 	 public List<Integer> getDistance2(int v) {
-		 // XXX: Implement this method in week 2
-		 return null;
+		if (v < 0 || v >= this.getNumVertices())
+			throw new IndexOutOfBoundsException();
+		 List<Integer> retList = new ArrayList<Integer>();
+		 List<Integer> tempList = this.getNeighbors(v);
+		 for (int i : tempList)
+			 retList.addAll(this.getNeighbors(i));
+		 return retList;
 	}
 	
 	/**
@@ -113,6 +118,13 @@ public class GraphAdjList extends Graph {
 				s += w+", ";
 			}
 		}
+		
+		s += "Two Hop Neighbrors\n";
+		for (int j = 0; j < this.getNumVertices(); j++) {
+			List<Integer> twoHop = this.getDistance2(j);
+			s += j + " : " + twoHop.toString() + "\n";
+		}
+		
 		return s;
 	}
 

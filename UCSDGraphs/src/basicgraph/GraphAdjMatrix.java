@@ -69,6 +69,7 @@ public class GraphAdjMatrix extends Graph {
 		List<Integer> neighbors = new ArrayList<Integer>();
 		for (int i = 0; i < getNumVertices(); i ++) {
 			for (int j=0; j< adjMatrix[v][i]; j ++) {
+				// we need the second loop in case there are more than one edges between nodes
 				neighbors.add(i);
 			}
 		}
@@ -104,8 +105,17 @@ public class GraphAdjMatrix extends Graph {
 	 * @return List<Integer> a list of indices of vertices.  
 	 */	
 	public List<Integer> getDistance2(int v) {
-		// XXX Implement this method in week 2
-		return null;
+		if (v < 0 || v >= this.getNumVertices())
+			throw new IndexOutOfBoundsException();
+		List<Integer> retList = new ArrayList<Integer>();
+		for (int i = 0; i < this.getNumVertices(); i++) {
+			int temp = 0;
+			for (int j = 0; j < this.getNumVertices(); j++) 
+				temp += this.adjMatrix[v][j] * this.adjMatrix[j][i];
+			for (int k = 0; k < temp; k++)
+				retList.add(i);
+		}
+		return retList;
 	}
 	
 	/**
