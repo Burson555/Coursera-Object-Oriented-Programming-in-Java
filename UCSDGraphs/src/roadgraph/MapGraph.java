@@ -27,6 +27,7 @@ public class MapGraph {
 	private int numVertices;
 	private int numEdges;
 	private HashMap<geography.GeographicPoint, MapNode> mapGraph;
+	private HashMap<geography.GeographicPoint, HashMap<geography.GeographicPoint, Edge>> edges;
 	
 	/**
 	 * Create a new empty MapGraph 
@@ -37,6 +38,7 @@ public class MapGraph {
 		this.numVertices = 0;
 		this.numEdges = 0;
 		this.mapGraph = new HashMap<geography.GeographicPoint, MapNode>();
+		this.edges = new HashMap<geography.GeographicPoint, HashMap<geography.GeographicPoint, Edge>>();
 	}
 	
 	/**
@@ -76,6 +78,9 @@ public class MapGraph {
 	public boolean addVertex(GeographicPoint location)
 	{
 		// TODO: Improve this method, to reduce it from O(n) where n is length of the vertex set
+		// After some searching on the web, it seems that 
+		// 		hashing two different instantiations of the same class with the same contents
+		//		will lead to different result, and thus different values in the HashMap.
 		Set<GeographicPoint> existing  = this.getVertices();
 		for (GeographicPoint gp : existing)
 			if (gp.distance(location) == 0)
@@ -98,11 +103,43 @@ public class MapGraph {
 	 */
 	public void addEdge(GeographicPoint from, GeographicPoint to, String roadName,
 			String roadType, double length) throws IllegalArgumentException {
-
-		//TODO: Implement this method in WEEK 3
-		
+		//TODO: Is this the best implementation?
+		this.validateParam(from, to, roadName, roadType, length);
+		if (!this.mapGraph.containsKey(from))
+			this.edges.put(from, new HashMap<geography.GeographicPoint, Edge>());
+		HashMap<geography.GeographicPoint, Edge> edgeMap = this.edges.get(from);
+		Edge edge = new Edge(from, to, roadName, roadType, length);
+		edgeMap.put(to, edge);
 	}
 	
+	/**
+	 * Validate the values of inputs of function .addEdge()
+	 * @param from The starting point of the edge
+	 * @param to The ending point of the edge
+	 * @param roadName The name of the road
+	 * @param roadType The type of the road
+	 * @param length The length of the road, in km
+	 * @throws IllegalArgumentException If the points have not already been
+	 *   added as nodes to the graph, if any of the arguments is null,
+	 *   or if the length is less than 0.
+	 */
+	private void validateParam(GeographicPoint from, GeographicPoint to, String roadName, String roadType,
+			double length) throws IllegalArgumentException {
+		if (length < 0)
+			throw new IllegalArgumentException();
+		if (from == null || to == null || roadName == null || roadType == null)
+			throw new IllegalArgumentException();
+		if (!(this.isVertex(from) && this.isVertex(to)))
+			throw new IllegalArgumentException();
+	}
+
+	/**
+	 * Checks whether a vertex exists
+	 */
+	private boolean isVertex(GeographicPoint v) {
+		// TODO Any space for improvement?
+		return this.mapGraph.containsKey(v);
+	}
 
 	/** Find the path from start to goal using breadth first search
 	 * 

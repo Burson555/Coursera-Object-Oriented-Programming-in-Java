@@ -21,4 +21,21 @@ public class Edge {
 		this.roadType = roadType;
 		this.length = length;
 	}
+	
+	public GeographicPoint getFrom() {
+		return this.from;
+	}
+	public GeographicPoint getTo() {
+		return this.to;
+	}
+	public String getRoadName() {
+		return this.roadName;
+	}
+	public String getRoadType() {
+		return this.roadType;
+	}
+	public double getLength() {
+		return this.length;
+	}
+	
 }
