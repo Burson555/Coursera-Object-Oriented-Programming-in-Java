@@ -7,7 +7,7 @@
  */
 package roadgraph;
 
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -24,14 +24,19 @@ import util.GraphLoader;
  */
 public class MapGraph {
 	//TODO: Add your member variables here in WEEK 3
+	private int numVertices;
+	private int numEdges;
+	private HashMap<geography.GeographicPoint, MapNode> mapGraph;
 	
-	
-	/** 
+	/**
 	 * Create a new empty MapGraph 
 	 */
 	public MapGraph()
 	{
 		// TODO: Implement in this constructor in WEEK 3
+		this.numVertices = 0;
+		this.numEdges = 0;
+		this.mapGraph = new HashMap<geography.GeographicPoint, MapNode>();
 	}
 	
 	/**
@@ -40,18 +45,7 @@ public class MapGraph {
 	 */
 	public int getNumVertices()
 	{
-		//TODO: Implement this method in WEEK 3
-		return 0;
-	}
-	
-	/**
-	 * Return the intersections, which are the vertices in this graph.
-	 * @return The vertices in this graph as GeographicPoints
-	 */
-	public Set<GeographicPoint> getVertices()
-	{
-		//TODO: Implement this method in WEEK 3
-		return null;
+		return this.numVertices;
 	}
 	
 	/**
@@ -60,11 +54,17 @@ public class MapGraph {
 	 */
 	public int getNumEdges()
 	{
-		//TODO: Implement this method in WEEK 3
-		return 0;
+		return this.numEdges;
 	}
-
 	
+	/**
+	 * Return the intersections, which are the vertices in this graph.
+	 * @return The vertices in this graph as GeographicPoints
+	 */
+	public Set<GeographicPoint> getVertices()
+	{
+		return this.mapGraph.keySet();
+	}
 	
 	/** Add a node corresponding to an intersection at a Geographic Point
 	 * If the location is already in the graph or null, this method does 
@@ -75,7 +75,12 @@ public class MapGraph {
 	 */
 	public boolean addVertex(GeographicPoint location)
 	{
-		// TODO: Implement this method in WEEK 3
+		// TODO: Improve this method, to reduce it from O(n) where n is length of the vertex set
+		Set<GeographicPoint> existing  = this.getVertices();
+		for (GeographicPoint gp : existing)
+			if (gp.distance(location) == 0)
+				return false;
+		this.mapGraph.put(location, new MapNode(location));
 		return false;
 	}
 	

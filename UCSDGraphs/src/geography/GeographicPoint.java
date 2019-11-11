@@ -25,7 +25,7 @@ public class GeographicPoint extends Double {
     
     private double getDist(double lat1, double lon1, double lat2, double lon2)
     {
-    	int R = 6373; // radius of the earth in kilometres
+    	int R = 6373; // radius of the earth in kilometers
     	double lat1rad = Math.toRadians(lat1);
     	double lat2rad = Math.toRadians(lat2);
     	double deltaLat = Math.toRadians(lat2-lat1);
