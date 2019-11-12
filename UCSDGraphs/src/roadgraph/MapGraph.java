@@ -1,13 +1,16 @@
 /**
- * @author UCSD MOOC development team and YOU
+ * @author UCSD MOOC development team and Burson
  * 
- * A class which reprsents a graph of geographic locations
- * Nodes in the graph are intersections between 
+ * A class which represents a graph of geographic locations
+ * Nodes in the graph are intersections between roads
  *
  */
 package roadgraph;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -15,13 +18,6 @@ import java.util.function.Consumer;
 import geography.GeographicPoint;
 import util.GraphLoader;
 
-/**
- * @author UCSD MOOC development team and YOU
- * 
- * A class which represents a graph of geographic locations
- * Nodes in the graph are intersections between 
- *
- */
 public class MapGraph {
 	private int numVertices;
 	private int numEdges;
@@ -33,7 +29,6 @@ public class MapGraph {
 	 */
 	public MapGraph()
 	{
-		// TODO: Implement in this constructor in WEEK 3
 		this.numVertices = 0;
 		this.numEdges = 0;
 		this.mapGraph = new HashMap<geography.GeographicPoint, MapNode>();
@@ -76,17 +71,11 @@ public class MapGraph {
 	 */
 	public boolean addVertex(GeographicPoint location)
 	{
-		// TODO: Improve this method, to reduce it from O(n) where n is length of the vertex set
-		// After some searching on the web, it seems that 
-		// 		hashing two different instantiations of the same class with the same contents
-		//		will lead to different result, and thus different values in the HashMap.
-		Set<GeographicPoint> existing  = this.getVertices();
-		for (GeographicPoint gp : existing)
-			if (gp.distance(location) == 0)
-				return false;
+		if (location == null || this.isVertex(location))
+			return false;
 		this.mapGraph.put(location, new MapNode(location));
 		this.numVertices++;
-		return false;
+		return true;
 	}
 	
 	/**
@@ -103,20 +92,18 @@ public class MapGraph {
 	 */
 	public void addEdge(GeographicPoint from, GeographicPoint to, String roadName,
 			String roadType, double length) throws IllegalArgumentException {
-		//TODO: Is this the best implementation?
-		this.validateParam(from, to, roadName, roadType, length);
-		
-		MapNode currNode = this.mapGraph.get(from);
-		if (!this.mapGraph.containsKey(from))
-			this.edges.put(currNode, new HashMap<MapNode, MapEdge>());
-		HashMap<MapNode, MapEdge> edgeMap = this.edges.get(currNode);
-		MapEdge edge = new MapEdge(to, roadName, roadType, length);
-		MapNode endNode = this.mapGraph.get(to);
-		edgeMap.put(endNode, edge);
+		this.validateParams(from, to, roadName, roadType, length);
 		
 		MapNode fromNode = this.mapGraph.get(from);
 		MapNode toNode = this.mapGraph.get(to);
 		fromNode.addNeighbor(toNode);
+		
+		if (!this.edges.containsKey(fromNode))
+			this.edges.put(fromNode, new HashMap<MapNode, MapEdge>());
+		HashMap<MapNode, MapEdge> edgeMap = this.edges.get(fromNode);
+		MapEdge edge = new MapEdge(fromNode, toNode, roadName, roadType, length);
+		edgeMap.put(toNode, edge);
+		
 		this.numEdges++;
 	}
 	
@@ -131,7 +118,7 @@ public class MapGraph {
 	 *   added as nodes to the graph, if any of the arguments is null,
 	 *   or if the length is less than 0.
 	 */
-	private void validateParam(GeographicPoint from, GeographicPoint to, String roadName, String roadType,
+	private void validateParams(GeographicPoint from, GeographicPoint to, String roadName, String roadType,
 			double length) throws IllegalArgumentException {
 		if (length < 0)
 			throw new IllegalArgumentException();
@@ -145,7 +132,6 @@ public class MapGraph {
 	 * Checks whether a vertex exists
 	 */
 	private boolean isVertex(GeographicPoint v) {
-		// TODO Any space for improvement?
 		return this.mapGraph.containsKey(v);
 	}
 
@@ -173,14 +159,62 @@ public class MapGraph {
 	public List<GeographicPoint> bfs(GeographicPoint start, 
 			 					     GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
-		// TODO: Implement this method in WEEK 3
+		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
+		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
 		
-		// Hook for visualization.  See write-up.
-		//nodeSearched.accept(next.getLocation());
+		boolean found = this.implementBFS(start, goal, nodeSearched, parentMap);
+		if (!found)
+			return retList;
 
-		return null;
+		MapNode goalNode = this.mapGraph.get(goal);
+		retList.add(goal);
+		while (parentMap.containsKey(goalNode)) {
+			MapNode parent = parentMap.get(goalNode);
+			retList.add(parent.getLocation());
+			goalNode = parent;
+		}
+
+		// Hook for visualization.  See write-up.
+		Collections.reverse(retList);
+		return retList;
 	}
 	
+	/** Find the path from start to goal using breadth first search
+	 * 
+	 * @param start The starting location
+	 * @param goal The goal location
+	 * @param nodeSearched A hook for visualization.  See assignment instructions for how to use it.
+	 * @param parentMap The MapNode to parent MapNode map used for path construction
+	 *   path from start to goal (including both start and goal).
+	 */
+	private boolean implementBFS(GeographicPoint start, GeographicPoint goal, 
+			Consumer<GeographicPoint> nodeSearched, HashMap<MapNode, MapNode> parentMap) {
+		// Initialization
+		MapNode startNode = this.mapGraph.get(start);
+		HashSet<MapNode> visited = new HashSet<MapNode>();
+		List<MapNode> queue = new LinkedList<MapNode>();
+		queue.add(startNode);
+		visited.add(startNode);
+		
+		// Search for the goal
+		while (!queue.isEmpty()) {
+			MapNode curr = queue.remove(0);
+			nodeSearched.accept(curr.getLocation());
+			if (curr.getLat() == goal.getX() && curr.getLon() == goal.getY())
+				return true;
+			
+			List<MapNode> neighbors = curr.getNeighbors();
+			for (MapNode temp : neighbors) {
+				if (!visited.contains(temp)) {
+					visited.add(temp);
+					queue.add(temp);
+					parentMap.put(temp, curr);
+				}
+			}
+		}
+		
+		return false;
+	}
 
 	/** Find the path from start to goal using Dijkstra's algorithm
 	 * 
