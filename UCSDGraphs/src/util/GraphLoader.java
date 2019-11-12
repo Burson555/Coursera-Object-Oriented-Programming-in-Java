@@ -518,7 +518,7 @@ public class GraphLoader
 	// The map returned is indexed by a GeographicPoint.  The values
 	// are lists of length two where each entry in the list is a list.
 	// The first list stores the outgoing roads while the second 
-	// stores the outgoing roads.
+	// stores the incoming roads.
 	private static HashMap<GeographicPoint, List<LinkedList<RoadLineInfo>>>
 	buildPointMapOneWay(String filename)
 	{

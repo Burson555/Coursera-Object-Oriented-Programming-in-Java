@@ -23,11 +23,10 @@ import util.GraphLoader;
  *
  */
 public class MapGraph {
-	//TODO: Add your member variables here in WEEK 3
 	private int numVertices;
 	private int numEdges;
 	private HashMap<geography.GeographicPoint, MapNode> mapGraph;
-	private HashMap<geography.GeographicPoint, HashMap<geography.GeographicPoint, Edge>> edges;
+	private HashMap<MapNode, HashMap<MapNode, MapEdge>> edges;
 	
 	/**
 	 * Create a new empty MapGraph 
@@ -38,7 +37,7 @@ public class MapGraph {
 		this.numVertices = 0;
 		this.numEdges = 0;
 		this.mapGraph = new HashMap<geography.GeographicPoint, MapNode>();
-		this.edges = new HashMap<geography.GeographicPoint, HashMap<geography.GeographicPoint, Edge>>();
+		this.edges = new HashMap<MapNode, HashMap<MapNode, MapEdge>>();
 	}
 	
 	/**
@@ -86,6 +85,7 @@ public class MapGraph {
 			if (gp.distance(location) == 0)
 				return false;
 		this.mapGraph.put(location, new MapNode(location));
+		this.numVertices++;
 		return false;
 	}
 	
@@ -96,7 +96,7 @@ public class MapGraph {
 	 * @param to The ending point of the edge
 	 * @param roadName The name of the road
 	 * @param roadType The type of the road
-	 * @param length The length of the road, in km
+	 * @param length The length of the road, in KM
 	 * @throws IllegalArgumentException If the points have not already been
 	 *   added as nodes to the graph, if any of the arguments is null,
 	 *   or if the length is less than 0.
@@ -105,11 +105,19 @@ public class MapGraph {
 			String roadType, double length) throws IllegalArgumentException {
 		//TODO: Is this the best implementation?
 		this.validateParam(from, to, roadName, roadType, length);
+		
+		MapNode currNode = this.mapGraph.get(from);
 		if (!this.mapGraph.containsKey(from))
-			this.edges.put(from, new HashMap<geography.GeographicPoint, Edge>());
-		HashMap<geography.GeographicPoint, Edge> edgeMap = this.edges.get(from);
-		Edge edge = new Edge(from, to, roadName, roadType, length);
-		edgeMap.put(to, edge);
+			this.edges.put(currNode, new HashMap<MapNode, MapEdge>());
+		HashMap<MapNode, MapEdge> edgeMap = this.edges.get(currNode);
+		MapEdge edge = new MapEdge(to, roadName, roadType, length);
+		MapNode endNode = this.mapGraph.get(to);
+		edgeMap.put(endNode, edge);
+		
+		MapNode fromNode = this.mapGraph.get(from);
+		MapNode toNode = this.mapGraph.get(to);
+		fromNode.addNeighbor(toNode);
+		this.numEdges++;
 	}
 	
 	/**
@@ -167,7 +175,7 @@ public class MapGraph {
 	{
 		// TODO: Implement this method in WEEK 3
 		
-		// Hook for visualization.  See writeup.
+		// Hook for visualization.  See write-up.
 		//nodeSearched.accept(next.getLocation());
 
 		return null;
@@ -201,7 +209,7 @@ public class MapGraph {
 	{
 		// TODO: Implement this method in WEEK 4
 
-		// Hook for visualization.  See writeup.
+		// Hook for visualization.  See write-up.
 		//nodeSearched.accept(next.getLocation());
 		
 		return null;
@@ -233,7 +241,7 @@ public class MapGraph {
 	{
 		// TODO: Implement this method in WEEK 4
 		
-		// Hook for visualization.  See writeup.
+		// Hook for visualization.  See write-up.
 		//nodeSearched.accept(next.getLocation());
 		
 		return null;

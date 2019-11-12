@@ -3,17 +3,18 @@ package roadgraph;
 import java.util.LinkedList;
 import java.util.List;
 
+import geography.GeographicPoint;
+
 /**
  * MapNode.java
  * 
  * A class to represent a Node in a graph which is a Map of road map with road intersections as vertices.
  */
 public class MapNode {
+	
 	private List<MapNode> neighbors;
-	// Since our maze is always a grid, nodes keep track of their row and column
-	private double lat;
-	private double lon;
 	private char displayChar;
+	private geography.GeographicPoint location;
 	
 	public static final char EMPTY = '-';
 	public static final char PATH = '*';
@@ -26,8 +27,7 @@ public class MapNode {
 	 */
 	public MapNode(geography.GeographicPoint location)
 	{
-		this.lat = location.getX();
-		this.lon = location.getY();
+		this.location = new geography.GeographicPoint(location.getX(), location.getY());
 		neighbors = new LinkedList<MapNode>();
 		displayChar = EMPTY;
 	}
@@ -62,14 +62,14 @@ public class MapNode {
 	 * @return the latitude
 	 */
 	public double getLat() {
-		return lat;
+		return this.location.getX();
 	}
 
 	/**
 	 * @return the longitude
 	 */
 	public double getLon() {
-		return lon;
+		return this.location.getY();
 	}
 	
 	
