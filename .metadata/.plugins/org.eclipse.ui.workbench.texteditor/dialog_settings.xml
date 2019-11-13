@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value=""/>
+		<item key="selection" value="lineCount"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="mapfiles.list"/>
+			<item value="addedge"/>
+			<item value="addver"/>
+			<item value="class RoadLineInfo"/>
+			<item value="RoadLineInfo"/>
+			<item value="toto"/>
+			<item value="revers"/>
 			<item value="tostring"/>
 			<item value="THRESHOLD"/>
 			<item value="predict"/>
@@ -16,13 +23,6 @@
 			<item value="ac"/>
 			<item value="getDictionary"/>
 			<item value="AutoSpellingTextArea"/>
-			<item value="getAutoComplete"/>
-			<item value="isWord"/>
-			<item value="StyleSpans"/>
-			<item value="HINT"/>
-			<item value="styleClass"/>
-			<item value="correct"/>
-			<item value="setBackgroundFill"/>
 		</list>
 		<list key="replacehistory">
 			<item value="AutoCompleteMatchCase"/>

@@ -174,7 +174,6 @@ public class MapGraph {
 			goalNode = parent;
 		}
 
-		// Hook for visualization.  See write-up.
 		Collections.reverse(retList);
 		return retList;
 	}
@@ -199,8 +198,9 @@ public class MapGraph {
 		// Search for the goal
 		while (!queue.isEmpty()) {
 			MapNode curr = queue.remove(0);
+			// Hook for visualization.
 			nodeSearched.accept(curr.getLocation());
-			if (curr.getLat() == goal.getX() && curr.getLon() == goal.getY())
+			if (curr.getLocation().equals(goal))
 				return true;
 			
 			List<MapNode> neighbors = curr.getNeighbors();

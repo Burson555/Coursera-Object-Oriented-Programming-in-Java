@@ -10,9 +10,9 @@ import java.util.List;
  * A class to represent a Node in the graph that represents the road map.
  */
 public class MapNode {
-	
-	private List<MapNode> neighbors;
+
 	private geography.GeographicPoint location;
+	private List<MapNode> neighbors;
 	
 	/**
 	 * Create a new empty MapNode with the given location and an empty neighbor list
