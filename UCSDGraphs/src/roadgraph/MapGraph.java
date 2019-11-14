@@ -165,14 +165,13 @@ public class MapGraph {
 	public List<GeographicPoint> bfs(GeographicPoint start, 
 			 					     GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
-		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
 		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
 		
 		boolean found = this.implementBFS(start, goal, nodeSearched, parentMap);
 		if (!found)
-			return retList;
+			return new LinkedList<GeographicPoint>();
 
-		this.createRetList(goal, parentMap, retList);
+		List<GeographicPoint> retList = this.createRetList(goal, parentMap);
 		Collections.reverse(retList);
 		return retList;
 	}
@@ -241,14 +240,13 @@ public class MapGraph {
 										  GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
 		// TODO: Implement this method in WEEK 4
-		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
 		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
 		
 		boolean found = this.implementSearch(start, goal, nodeSearched, parentMap, true);
 		if (!found)
-			return retList;
+			return new LinkedList<GeographicPoint>();
 
-		this.createRetList(goal, parentMap, retList);
+		List<GeographicPoint> retList = this.createRetList(goal, parentMap);
 		Collections.reverse(retList);
 		return retList;		
 	}
@@ -278,14 +276,13 @@ public class MapGraph {
 											 GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
 		// TODO: Implement this method in WEEK 4
-		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
 		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
 		
 		boolean found = this.implementSearch(start, goal, nodeSearched, parentMap, false);
 		if (!found)
-			return retList;
+			return new LinkedList<GeographicPoint>();
 
-		this.createRetList(goal, parentMap, retList);
+		List<GeographicPoint> retList = this.createRetList(goal, parentMap);
 		Collections.reverse(retList);
 		return retList;	
 	}	
@@ -296,8 +293,8 @@ public class MapGraph {
 	 * @param parentMap parentMap The MapNode to parent MapNode map used for path construction
 	 * @param retList The list of intersections that form the shortest path
 	 */
-	private void createRetList(GeographicPoint goal, HashMap<MapNode, MapNode> parentMap,
-			List<GeographicPoint> retList) {
+	private List<GeographicPoint> createRetList(GeographicPoint goal, HashMap<MapNode, MapNode> parentMap) {
+		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
 		MapNode goalNode = this.mapGraph.get(goal);
 		retList.add(goal);
 		while (parentMap.containsKey(goalNode)) {
@@ -305,6 +302,7 @@ public class MapGraph {
 			retList.add(parent.getLocation());
 			goalNode = parent;
 		}
+		return retList;
 	}
 
 	/** Search Algorithm for both Dijkstra's and A*
@@ -324,31 +322,30 @@ public class MapGraph {
 		HashSet<MapNode> visited = new HashSet<MapNode>();
 		PriorityQueue<MapNode> queue = new PriorityQueue<MapNode>();
 		queue.add(startNode);
-		visited.add(startNode);
 		this.costMap.put(startNode, this.MIN_COST);
 		
 		// Search for the goal
 		while (!queue.isEmpty()) {
 			MapNode curr = queue.poll();
-			// Hook for visualization.
-			nodeSearched.accept(curr.getLocation());
 			if (curr.getLocation().equals(goal))
 				return true;
-			
+
+			if (visited.add(curr))
+				// Hook for visualization.
+				nodeSearched.accept(curr.getLocation());
+			else
+				continue;
 			List<MapNode> neighbors = curr.getNeighbors();
 			for (MapNode temp : neighbors) {
-				// TODO: a problem can occur within this if condition
-				if (!visited.contains(temp)) {
-					visited.add(temp);
-					queue.add(temp);
-					parentMap.put(temp, curr);
-					if (isDijkstra)
-						this.updateCost(curr, temp);
-					else
-						this.updateCost(curr, temp, goal);
-				}
+				if (isDijkstra)
+					this.updateCost(parentMap, curr, temp);
+				else
+					this.updateCost(parentMap, curr, temp, goal);
+				queue.add(temp);
+				// if the line above is deleted
+				// duplicates will be processed several times
+				// and result in the failure of the program 
 			}
-			
 		}
 		
 		return false;
@@ -358,20 +355,24 @@ public class MapGraph {
 	 * @param curr the start vertex of the directed edge
 	 * @param temp the end vertex of the directed edge
 	 */
-	private void updateCost(MapNode curr, MapNode temp) {
+	private void updateCost(HashMap<MapNode, MapNode> parentMap, MapNode curr, MapNode temp) {
 		Double new_cost = this.costMap.get(curr) + this.getEdgeLength(curr, temp);
-		if (new_cost < this.costMap.get(temp))
+		if (new_cost < this.costMap.get(temp)) {
 			this.costMap.put(temp, new_cost);
+			parentMap.put(temp, curr);
+		}
 	}
 
 	/** Cost updating function for A* Search
 	 * @param curr the start vertex of the directed edge
 	 * @param temp the end vertex of the directed edge
 	 */
-	private void updateCost(MapNode curr, MapNode temp, GeographicPoint goal) {
+	private void updateCost(HashMap<MapNode, MapNode> parentMap, MapNode curr, MapNode temp, GeographicPoint goal) {
 		Double new_cost = this.costMap.get(curr) + this.getEdgeLength(curr, temp) + temp.getLocation().distance(goal);
-		if (new_cost < this.costMap.get(temp))
+		if (new_cost < this.costMap.get(temp)) {
 			this.costMap.put(temp, new_cost);
+			parentMap.put(temp, curr);
+		}
 	}
 
 	/** Get the edge length of edge from curr to edge
