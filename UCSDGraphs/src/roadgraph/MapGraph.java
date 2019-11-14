@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -23,6 +24,9 @@ public class MapGraph {
 	private int numEdges;
 	private HashMap<geography.GeographicPoint, MapNode> mapGraph;
 	private HashMap<MapNode, HashMap<MapNode, MapEdge>> edges;
+	private HashMap<MapNode, Double> costMap;
+	private final Double MAX_COST = 9999.9999;
+	private final Double MIN_COST = 0.0;
 	
 	/**
 	 * Create a new empty MapGraph 
@@ -33,6 +37,7 @@ public class MapGraph {
 		this.numEdges = 0;
 		this.mapGraph = new HashMap<geography.GeographicPoint, MapNode>();
 		this.edges = new HashMap<MapNode, HashMap<MapNode, MapEdge>>();
+		this.costMap = new HashMap<MapNode, Double>();
 	}
 	
 	/**
@@ -73,8 +78,9 @@ public class MapGraph {
 	{
 		if (location == null || this.isVertex(location))
 			return false;
-		this.mapGraph.put(location, new MapNode(location));
+		this.mapGraph.put(location, new MapNode(location, this.costMap));
 		this.numVertices++;
+		this.costMap.put(this.mapGraph.get(location), this.MAX_COST);
 		return true;
 	}
 	
@@ -166,19 +172,12 @@ public class MapGraph {
 		if (!found)
 			return retList;
 
-		MapNode goalNode = this.mapGraph.get(goal);
-		retList.add(goal);
-		while (parentMap.containsKey(goalNode)) {
-			MapNode parent = parentMap.get(goalNode);
-			retList.add(parent.getLocation());
-			goalNode = parent;
-		}
-
+		this.createRetList(goal, parentMap, retList);
 		Collections.reverse(retList);
 		return retList;
 	}
 	
-	/** Find the path from start to goal using breadth first search
+	/** Breadth First Search
 	 * 
 	 * @param start The starting location
 	 * @param goal The goal location
@@ -220,7 +219,7 @@ public class MapGraph {
 	 * 
 	 * @param start The starting location
 	 * @param goal The goal location
-	 * @return The list of intersections that form the shortest path from 
+	 * @return The list of intersections that form the shortest path from
 	 *   start to goal (including both start and goal).
 	 */
 	public List<GeographicPoint> dijkstra(GeographicPoint start, GeographicPoint goal) {
@@ -235,18 +234,23 @@ public class MapGraph {
 	 * @param start The starting location
 	 * @param goal The goal location
 	 * @param nodeSearched A hook for visualization.  See assignment instructions for how to use it.
-	 * @return The list of intersections that form the shortest path from 
+	 * @return The list of intersections that form the shortest path from
 	 *   start to goal (including both start and goal).
 	 */
 	public List<GeographicPoint> dijkstra(GeographicPoint start, 
 										  GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
 		// TODO: Implement this method in WEEK 4
-
-		// Hook for visualization.  See write-up.
-		//nodeSearched.accept(next.getLocation());
+		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
+		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
 		
-		return null;
+		boolean found = this.implementSearch(start, goal, nodeSearched, parentMap, true);
+		if (!found)
+			return retList;
+
+		this.createRetList(goal, parentMap, retList);
+		Collections.reverse(retList);
+		return retList;		
 	}
 
 	/** Find the path from start to goal using A-Star search
@@ -274,14 +278,109 @@ public class MapGraph {
 											 GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
 		// TODO: Implement this method in WEEK 4
+		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
+		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
 		
-		// Hook for visualization.  See write-up.
-		//nodeSearched.accept(next.getLocation());
-		
-		return null;
+		boolean found = this.implementSearch(start, goal, nodeSearched, parentMap, false);
+		if (!found)
+			return retList;
+
+		this.createRetList(goal, parentMap, retList);
+		Collections.reverse(retList);
+		return retList;	
+	}	
+	
+	/** Create the list to return
+	 * 
+	 * @param goal the destination we are planing to reach
+	 * @param parentMap parentMap The MapNode to parent MapNode map used for path construction
+	 * @param retList The list of intersections that form the shortest path
+	 */
+	private void createRetList(GeographicPoint goal, HashMap<MapNode, MapNode> parentMap,
+			List<GeographicPoint> retList) {
+		MapNode goalNode = this.mapGraph.get(goal);
+		retList.add(goal);
+		while (parentMap.containsKey(goalNode)) {
+			MapNode parent = parentMap.get(goalNode);
+			retList.add(parent.getLocation());
+			goalNode = parent;
+		}
 	}
 
-	
+	/** Search Algorithm for both Dijkstra's and A*
+	 * 
+	 * @param start The starting location
+	 * @param goal The goal location
+	 * @param nodeSearched A hook for visualization.  See assignment instructions for how to use it.
+	 * @param parentMap The MapNode to parent MapNode map used for path construction
+	 *   path from start to goal (including both start and goal).
+	 * @param isDijkstra true if we are running Dijkstra's algorithms, false for A* Search
+	 * @return whether or not we've found the path from start to goal (including both start and goal).
+	 */
+	private boolean implementSearch(GeographicPoint start, GeographicPoint goal, 
+			Consumer<GeographicPoint> nodeSearched, HashMap<MapNode, MapNode> parentMap, boolean isDijkstra) {
+		// Initialization
+		MapNode startNode = this.mapGraph.get(start);
+		HashSet<MapNode> visited = new HashSet<MapNode>();
+		PriorityQueue<MapNode> queue = new PriorityQueue<MapNode>();
+		queue.add(startNode);
+		visited.add(startNode);
+		this.costMap.put(startNode, this.MIN_COST);
+		
+		// Search for the goal
+		while (!queue.isEmpty()) {
+			MapNode curr = queue.poll();
+			// Hook for visualization.
+			nodeSearched.accept(curr.getLocation());
+			if (curr.getLocation().equals(goal))
+				return true;
+			
+			List<MapNode> neighbors = curr.getNeighbors();
+			for (MapNode temp : neighbors) {
+				// TODO: a problem can occur within this if condition
+				if (!visited.contains(temp)) {
+					visited.add(temp);
+					queue.add(temp);
+					parentMap.put(temp, curr);
+					if (isDijkstra)
+						this.updateCost(curr, temp);
+					else
+						this.updateCost(curr, temp, goal);
+				}
+			}
+			
+		}
+		
+		return false;
+	}
+
+	/** Cost updating function for Dijkstra's Algorithm
+	 * @param curr the start vertex of the directed edge
+	 * @param temp the end vertex of the directed edge
+	 */
+	private void updateCost(MapNode curr, MapNode temp) {
+		Double new_cost = this.costMap.get(curr) + this.getEdgeLength(curr, temp);
+		if (new_cost < this.costMap.get(temp))
+			this.costMap.put(temp, new_cost);
+	}
+
+	/** Cost updating function for A* Search
+	 * @param curr the start vertex of the directed edge
+	 * @param temp the end vertex of the directed edge
+	 */
+	private void updateCost(MapNode curr, MapNode temp, GeographicPoint goal) {
+		Double new_cost = this.costMap.get(curr) + this.getEdgeLength(curr, temp) + temp.getLocation().distance(goal);
+		if (new_cost < this.costMap.get(temp))
+			this.costMap.put(temp, new_cost);
+	}
+
+	/** Get the edge length of edge from curr to edge
+	 * @param curr the start vertex of the directed edge
+	 * @param temp the end vertex of the directed edge
+	 */
+	private Double getEdgeLength(MapNode curr, MapNode temp) {
+		return this.edges.get(curr).get(temp).getLength();
+	}
 	
 	public static void main(String[] args)
 	{
@@ -298,7 +397,7 @@ public class MapGraph {
 		 * the Week 3 End of Week Quiz, EVEN IF you score 100% on the 
 		 * programming assignment.
 		 */
-		/*
+		
 		MapGraph simpleTestMap = new MapGraph();
 		GraphLoader.loadRoadMap("data/testdata/simpletest.map", simpleTestMap);
 		
@@ -327,7 +426,7 @@ public class MapGraph {
 		System.out.println("Test 3 using utc: Dijkstra should be 37 and AStar should be 10");
 		testroute = testMap.dijkstra(testStart,testEnd);
 		testroute2 = testMap.aStarSearch(testStart,testEnd);
-		*/
+		
 		
 		
 		/* Use this code in Week 3 End of Week Quiz */
