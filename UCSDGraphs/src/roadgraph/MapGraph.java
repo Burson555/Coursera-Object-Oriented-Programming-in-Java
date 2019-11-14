@@ -98,7 +98,7 @@ public class MapGraph {
 	 */
 	public void addEdge(GeographicPoint from, GeographicPoint to, String roadName,
 			String roadType, double length) throws IllegalArgumentException {
-		this.validateParams(from, to, roadName, roadType, length);
+		this.validateParams_AddEdge(from, to, roadName, roadType, length);
 		
 		MapNode fromNode = this.mapGraph.get(from);
 		MapNode toNode = this.mapGraph.get(to);
@@ -124,7 +124,7 @@ public class MapGraph {
 	 *   added as nodes to the graph, if any of the arguments is null,
 	 *   or if the length is less than 0.
 	 */
-	private void validateParams(GeographicPoint from, GeographicPoint to, String roadName, String roadType,
+	private void validateParams_AddEdge(GeographicPoint from, GeographicPoint to, String roadName, String roadType,
 			double length) throws IllegalArgumentException {
 		if (length < 0)
 			throw new IllegalArgumentException();
@@ -318,6 +318,10 @@ public class MapGraph {
 	private boolean implementSearch(GeographicPoint start, GeographicPoint goal, 
 			Consumer<GeographicPoint> nodeSearched, HashMap<MapNode, MapNode> parentMap, boolean isDijkstra) {
 		// Initialization
+		boolean isValid = this.validateParams_Search(start, goal, nodeSearched);
+		if (!isValid)
+			return false;
+		int nodeCount = 0;
 		MapNode startNode = this.mapGraph.get(start);
 		HashSet<MapNode> visited = new HashSet<MapNode>();
 		PriorityQueue<MapNode> queue = new PriorityQueue<MapNode>();
@@ -327,8 +331,10 @@ public class MapGraph {
 		// Search for the goal
 		while (!queue.isEmpty()) {
 			MapNode curr = queue.poll();
-			if (curr.getLocation().equals(goal))
+			if (curr.getLocation().equals(goal)) {
+				System.out.println("Nodes visited in search: " + nodeCount + "\n\n\n\n");
 				return true;
+			}
 
 			if (visited.add(curr))
 				// Hook for visualization.
@@ -346,9 +352,26 @@ public class MapGraph {
 				// duplicates will be processed several times
 				// and result in the failure of the program 
 			}
+			nodeCount++;
+			if (isDijkstra)
+				System.out.println("DIJKSTRA visiting[NODE at location (Lat: " + curr.getLat() + "\r\n" + 
+						"Lon: " + curr.getLon() + ") intersects streets: south, high, next, ]");
+			else
+				System.out.println("A* visiting[NODE at location (Lat: " + curr.getLat() + "\r\n" + 
+						"Lon: " + curr.getLon() + ") intersects streets: south, high, next, ]");
 		}
-		
 		return false;
+	}
+
+	private boolean validateParams_Search(GeographicPoint start, GeographicPoint goal, 
+			Consumer<GeographicPoint> nodeSearched) {
+		// we don't have to validate parentMap
+		// because we just created it before calling this method
+		if (start == null || goal == null || nodeSearched == null)
+			return false;
+		if (this.mapGraph.get(start) == null || this.mapGraph.get(goal) == null)
+			return false;
+		return true;
 	}
 
 	/** Cost updating function for Dijkstra's Algorithm
