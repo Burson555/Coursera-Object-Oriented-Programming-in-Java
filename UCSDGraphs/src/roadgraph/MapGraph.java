@@ -24,7 +24,6 @@ public class MapGraph {
 	private int numEdges;
 	private HashMap<geography.GeographicPoint, MapNode> mapGraph;
 	private HashMap<MapNode, HashMap<MapNode, MapEdge>> edges;
-	private HashMap<MapNode, Double> costMap;
 	private final Double MAX_COST = 9999.9999;
 	private final Double MIN_COST = 0.0;
 	
@@ -37,7 +36,6 @@ public class MapGraph {
 		this.numEdges = 0;
 		this.mapGraph = new HashMap<geography.GeographicPoint, MapNode>();
 		this.edges = new HashMap<MapNode, HashMap<MapNode, MapEdge>>();
-		this.costMap = new HashMap<MapNode, Double>();
 	}
 	
 	/**
@@ -78,9 +76,8 @@ public class MapGraph {
 	{
 		if (location == null || this.isVertex(location))
 			return false;
-		this.mapGraph.put(location, new MapNode(location, this.costMap));
+		this.mapGraph.put(location, new MapNode(location));
 		this.numVertices++;
-		this.costMap.put(this.mapGraph.get(location), this.MAX_COST);
 		return true;
 	}
 	
@@ -315,17 +312,23 @@ public class MapGraph {
 	 */
 	private boolean implementSearch(GeographicPoint start, GeographicPoint goal, 
 			Consumer<GeographicPoint> nodeSearched, HashMap<MapNode, MapNode> parentMap, boolean isDijkstra) {
-		// TODO: MORE DEBUGGING NEEDED, the problem may come from the insertion of priority queue
-		// Initialization
+		// TODO: MORE DEBUGGING NEEDED, now Dijkstra is working correctly
 		boolean isValid = this.validateParams_Search(start, goal, nodeSearched);
 		if (!isValid)
 			return false;
+		
+		// Initialization
+		HashMap<MapNode, Double> costMap = new HashMap<MapNode, Double>();
+		for (MapNode n : this.mapGraph.values()) {
+			costMap.put(n, this.MAX_COST);
+			n.setCostMap(costMap);
+		}
 		int nodeCount = 0;
 		MapNode startNode = this.mapGraph.get(start);
 		HashSet<MapNode> visited = new HashSet<MapNode>();
 		PriorityQueue<MapNode> queue = new PriorityQueue<MapNode>();
 		queue.add(startNode);
-		this.costMap.put(startNode, this.MIN_COST);
+		costMap.put(startNode, this.MIN_COST);
 		
 		// Search for the goal
 		while (!queue.isEmpty()) {
@@ -340,10 +343,11 @@ public class MapGraph {
 			String name = "";
 			List<MapNode> neighbors = curr.getNeighbors();
 			for (MapNode temp : neighbors) {
+				queue.remove(temp);
 				if (isDijkstra)
-					this.updateCost(parentMap, curr, temp);
+					this.updateCost(costMap, parentMap, curr, temp);
 				else
-					this.updateCost(parentMap, curr, temp, goal);
+					this.updateCost(costMap, parentMap, curr, temp, goal);
 				queue.add(temp);
 				name += this.edges.get(curr).get(temp).getRoadName() + ", ";
 				// if the line above is deleted
@@ -382,10 +386,10 @@ public class MapGraph {
 	 * @param curr the start vertex of the directed edge
 	 * @param temp the end vertex of the directed edge
 	 */
-	private void updateCost(HashMap<MapNode, MapNode> parentMap, MapNode curr, MapNode temp) {
-		Double new_cost = this.costMap.get(curr) + this.getEdgeLength(curr, temp);
-		if (new_cost < this.costMap.get(temp)) {
-			this.costMap.put(temp, new_cost);
+	private void updateCost(HashMap<MapNode, Double> costMap, HashMap<MapNode, MapNode> parentMap, MapNode curr, MapNode temp) {
+		Double new_cost = costMap.get(curr) + this.getEdgeLength(curr, temp);
+		if (new_cost < costMap.get(temp)) {
+			costMap.put(temp, new_cost);
 			parentMap.put(temp, curr);
 		}
 	}
@@ -394,10 +398,10 @@ public class MapGraph {
 	 * @param curr the start vertex of the directed edge
 	 * @param temp the end vertex of the directed edge
 	 */
-	private void updateCost(HashMap<MapNode, MapNode> parentMap, MapNode curr, MapNode temp, GeographicPoint goal) {
-		Double new_cost = this.costMap.get(curr) + this.getEdgeLength(curr, temp) + temp.getLocation().distance(goal);
-		if (new_cost < this.costMap.get(temp)) {
-			this.costMap.put(temp, new_cost);
+	private void updateCost(HashMap<MapNode, Double> costMap, HashMap<MapNode, MapNode> parentMap, MapNode curr, MapNode temp, GeographicPoint goal) {
+		Double new_cost = costMap.get(curr) + this.getEdgeLength(curr, temp) + temp.getLocation().distance(goal);
+		if (new_cost < costMap.get(temp)) {
+			costMap.put(temp, new_cost);
 			parentMap.put(temp, curr);
 		}
 	}

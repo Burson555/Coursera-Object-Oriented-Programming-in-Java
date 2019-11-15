@@ -39,6 +39,14 @@ public class MapNode implements Comparable<MapNode>{
 	}
 
 	/**
+	 * @param costMap the cost map to be set
+	 */
+	public void setCostMap(HashMap<MapNode, Double> costMap) 
+	{
+		this.costMap = costMap;
+	}
+
+	/**
 	 * @param neighbor ONE neighbor MapNode to add
 	 */
 	public void addNeighbor(MapNode neighbor) 
