@@ -174,6 +174,24 @@ public class MapGraph {
 		List<GeographicPoint> retList = this.createRetList(goal, parentMap);
 		Collections.reverse(retList);
 		return retList;
+	}	
+	
+	/** Create the list to return
+	 * 
+	 * @param goal the destination we are planing to reach
+	 * @param parentMap parentMap The MapNode to parent MapNode map used for path construction
+	 * @param retList The list of intersections that form the shortest path
+	 */
+	private List<GeographicPoint> createRetList(GeographicPoint goal, HashMap<MapNode, MapNode> parentMap) {
+		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
+		MapNode goalNode = this.mapGraph.get(goal);
+		retList.add(goal);
+		while (parentMap.containsKey(goalNode)) {
+			MapNode parent = parentMap.get(goalNode);
+			retList.add(parent.getLocation());
+			goalNode = parent;
+		}
+		return retList;
 	}
 	
 	/** Breadth First Search
@@ -227,30 +245,6 @@ public class MapGraph {
         Consumer<GeographicPoint> temp = (x) -> {};
         return dijkstra(start, goal, temp);
 	}
-	
-	/** Find the path from start to goal using Dijkstra's algorithm
-	 * 
-	 * @param start The starting location
-	 * @param goal The goal location
-	 * @param nodeSearched A hook for visualization.  See assignment instructions for how to use it.
-	 * @return The list of intersections that form the shortest path from
-	 *   start to goal (including both start and goal).
-	 */
-	public List<GeographicPoint> dijkstra(GeographicPoint start, 
-										  GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
-	{
-		// TODO: Implement this method in WEEK 4
-		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
-		
-		boolean found = this.implementSearch(start, goal, nodeSearched, parentMap, true);
-		if (!found)
-			return new LinkedList<GeographicPoint>();
-
-		List<GeographicPoint> retList = this.createRetList(goal, parentMap);
-		Collections.reverse(retList);
-		return retList;		
-	}
-
 	/** Find the path from start to goal using A-Star search
 	 * 
 	 * @param start The starting location
@@ -264,6 +258,29 @@ public class MapGraph {
         return aStarSearch(start, goal, temp);
 	}
 	
+	/** Find the path from start to goal using Dijkstra's algorithm
+	 * 
+	 * @param start The starting location
+	 * @param goal The goal location
+	 * @param nodeSearched A hook for visualization.  See assignment instructions for how to use it.
+	 * @return The list of intersections that form the shortest path from
+	 *   start to goal (including both start and goal).
+	 */
+	public List<GeographicPoint> dijkstra(GeographicPoint start, 
+										  GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
+	{
+		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
+		
+		boolean found = this.implementSearch(start, goal, nodeSearched, parentMap, true);
+		if (!found)
+			return new LinkedList<GeographicPoint>();
+
+		List<GeographicPoint> retList = this.createRetList(goal, parentMap);
+		Collections.reverse(retList);
+		return retList;		
+	}
+
+	
 	/** Find the path from start to goal using A-Star search
 	 * 
 	 * @param start The starting location
@@ -275,7 +292,6 @@ public class MapGraph {
 	public List<GeographicPoint> aStarSearch(GeographicPoint start, 
 											 GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
-		// TODO: Implement this method in WEEK 4
 		HashMap<MapNode, MapNode> parentMap = new HashMap<MapNode, MapNode>();
 		
 		boolean found = this.implementSearch(start, goal, nodeSearched, parentMap, false);
@@ -285,24 +301,6 @@ public class MapGraph {
 		List<GeographicPoint> retList = this.createRetList(goal, parentMap);
 		Collections.reverse(retList);
 		return retList;	
-	}	
-	
-	/** Create the list to return
-	 * 
-	 * @param goal the destination we are planing to reach
-	 * @param parentMap parentMap The MapNode to parent MapNode map used for path construction
-	 * @param retList The list of intersections that form the shortest path
-	 */
-	private List<GeographicPoint> createRetList(GeographicPoint goal, HashMap<MapNode, MapNode> parentMap) {
-		List<GeographicPoint> retList = new LinkedList<GeographicPoint>();
-		MapNode goalNode = this.mapGraph.get(goal);
-		retList.add(goal);
-		while (parentMap.containsKey(goalNode)) {
-			MapNode parent = parentMap.get(goalNode);
-			retList.add(parent.getLocation());
-			goalNode = parent;
-		}
-		return retList;
 	}
 
 	/** Search Algorithm for both Dijkstra's and A*
@@ -317,6 +315,7 @@ public class MapGraph {
 	 */
 	private boolean implementSearch(GeographicPoint start, GeographicPoint goal, 
 			Consumer<GeographicPoint> nodeSearched, HashMap<MapNode, MapNode> parentMap, boolean isDijkstra) {
+		// TODO: MORE DEBUGGING NEEDED, the problem may come from the insertion of priority queue
 		// Initialization
 		boolean isValid = this.validateParams_Search(start, goal, nodeSearched);
 		if (!isValid)
@@ -331,16 +330,14 @@ public class MapGraph {
 		// Search for the goal
 		while (!queue.isEmpty()) {
 			MapNode curr = queue.poll();
-			if (curr.getLocation().equals(goal)) {
-				System.out.println("Nodes visited in search: " + nodeCount + "\n\n\n\n");
-				return true;
-			}
 
+			// *** FIRST deal with neighbors
 			if (visited.add(curr))
 				// Hook for visualization.
 				nodeSearched.accept(curr.getLocation());
 			else
 				continue;
+			String name = "";
 			List<MapNode> neighbors = curr.getNeighbors();
 			for (MapNode temp : neighbors) {
 				if (isDijkstra)
@@ -348,17 +345,24 @@ public class MapGraph {
 				else
 					this.updateCost(parentMap, curr, temp, goal);
 				queue.add(temp);
+				name += this.edges.get(curr).get(temp).getRoadName() + ", ";
 				// if the line above is deleted
 				// duplicates will be processed several times
 				// and result in the failure of the program 
 			}
-			nodeCount++;
 			if (isDijkstra)
 				System.out.println("DIJKSTRA visiting[NODE at location (Lat: " + curr.getLat() + "\r\n" + 
-						"Lon: " + curr.getLon() + ") intersects streets: south, high, next, ]");
+						"Lon: " + curr.getLon() + ") intersects streets: " + name + "]");
 			else
 				System.out.println("A* visiting[NODE at location (Lat: " + curr.getLat() + "\r\n" + 
-						"Lon: " + curr.getLon() + ") intersects streets: south, high, next, ]");
+						"Lon: " + curr.getLon() + ") intersects streets: " + name + "]");
+
+			// *** SECOND check whether or not it is goal
+			nodeCount++;
+			if (curr.getLocation().equals(goal)) {
+				System.out.println("Nodes visited in search: " + nodeCount + "\n\n\n\n");
+				return true;
+			}
 		}
 		return false;
 	}
