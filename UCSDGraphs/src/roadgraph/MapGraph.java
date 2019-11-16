@@ -328,7 +328,10 @@ public class MapGraph {
 		HashSet<MapNode> visited = new HashSet<MapNode>();
 		PriorityQueue<MapNode> queue = new PriorityQueue<MapNode>();
 		queue.add(startNode);
-		costMap.put(startNode, this.MIN_COST);
+		if (isDijkstra)
+			costMap.put(startNode, this.MIN_COST);
+		else
+			costMap.put(startNode, start.distance(goal));
 		
 		// Search for the goal
 		while (!queue.isEmpty()) {
@@ -339,11 +342,10 @@ public class MapGraph {
 				// Hook for visualization.
 				nodeSearched.accept(curr.getLocation());
 			else
-				continue;
+				continue; // this line is necessary because we've added the same node multiple times
 			String name = "";
 			List<MapNode> neighbors = curr.getNeighbors();
 			for (MapNode temp : neighbors) {
-				queue.remove(temp);
 				if (isDijkstra)
 					this.updateCost(costMap, parentMap, curr, temp);
 				else
@@ -399,7 +401,10 @@ public class MapGraph {
 	 * @param temp the end vertex of the directed edge
 	 */
 	private void updateCost(HashMap<MapNode, Double> costMap, HashMap<MapNode, MapNode> parentMap, MapNode curr, MapNode temp, GeographicPoint goal) {
-		Double new_cost = costMap.get(curr) + this.getEdgeLength(curr, temp) + temp.getLocation().distance(goal);
+		Double new_cost = costMap.get(curr) + this.getEdgeLength(curr, temp) + 
+				temp.getLocation().distance(goal) - curr.getLocation().distance(goal);
+		// the last term of the above equation is necessary
+		// because otherwise we would count the distance between curr and goal into the cost of temp
 		if (new_cost < costMap.get(temp)) {
 			costMap.put(temp, new_cost);
 			parentMap.put(temp, curr);
